@@ -1,0 +1,6 @@
+{% extends 'base_template.html' %}
+{% block body_content %}
+    {% for relay in object_list %}
+        {{ relay }}
+    {% endfor %}
+{% endblock %}
