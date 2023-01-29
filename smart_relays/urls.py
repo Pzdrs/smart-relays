@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from smart_relays.views import MyView
+
 urlpatterns = [
+    path('', MyView.as_view()),
     path('admin/', admin.site.urls),
 ]
