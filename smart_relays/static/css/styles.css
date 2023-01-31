@@ -1,0 +1,31 @@
+.navbar {
+    height: 3.5rem;
+}
+
+.aside {
+    position: fixed;
+    top: 3.5rem;
+    padding-left: 0.5rem;
+    padding-top: 0.3rem;
+    bottom: 0;
+    width: 17rem;
+}
+
+main {
+    margin-top: 3.5rem;
+    margin-left: 17rem;
+    padding: 0 1rem;
+}
+
+@media (width <= 500px) {
+    .aside {
+        padding-top: 3.8rem;
+        position: static;
+        width: 100%;
+    }
+
+    main {
+        margin-left: 0;
+        margin-top: 0;
+    }
+}

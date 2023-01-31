@@ -12,15 +12,15 @@ class RelayListView(SmartRelaysView, ListView):
 
 class RelayDetailView(SmartRelaysView, DetailView):
     model = Relay
-    template_name = 'relay_detail.html'
+    template_name = 'login.html'
 
     def get_title(self):
         return self.object.name
 
 
 class RelayUpdateView(UpdateView):
-    pass
+    model = Relay
 
 
 class RelayDeleteView(DeleteView):
-    pass
+    model = Relay

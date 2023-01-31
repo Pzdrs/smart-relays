@@ -1,6 +1,10 @@
 {% extends 'base_template.html' %}
 {% block body_content %}
-    {% for relay in object_list %}
-        {{ relay }}
-    {% endfor %}
+    <div class="columns is-multiline">
+        {% for relay in object_list %}
+            <div class="column is-full-mobile is-6-tablet is-6-desktop is-4-widescreen is-3-fullhd">
+                {% include 'includes/relay_card.html' %}
+            </div>
+        {% endfor %}
+    </div>
 {% endblock %}

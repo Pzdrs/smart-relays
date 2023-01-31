@@ -11,3 +11,5 @@ for easy integration with other applications, such as **Node-RED** or **Home Ass
 - [ ] Per-relay user permissions
 - [ ] MQTT support
 - [ ] Built-in HTTP API
+- [ ] Scheduled tasks
+- [ ] Per-relay audit logs

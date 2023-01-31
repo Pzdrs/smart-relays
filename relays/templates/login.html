@@ -1,0 +1,29 @@
+{% extends 'base_template.html' %}
+{% block body %}
+    <div class="ui container">
+        <div class="ui center aligned grid" style="margin: 0 auto;">
+            <div class="column">
+                <h2 class="ui blue header">
+                    Log-in to your account
+                </h2>
+                <form class="ui large form">
+                    <div class="ui stacked segment">
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input type="text" name="email" placeholder="E-mail address">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" name="password" placeholder="Password">
+                            </div>
+                        </div>
+                        <button class="ui fluid large blue submit button">Login</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

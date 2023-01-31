@@ -19,9 +19,34 @@
 </head>
 <body>
 {% block body %}
-    <div class="ui container">
+    {% block navigation %}
+        {% include 'includes/navigation.html' %}
+    {% endblock %}
+    <main>
+        <header>
+            <p class="is-size-3 mb-3">
+                {% block page_title %}
+                    {% if page_title %}
+                        {{ page_title }}
+                    {% elif title %}
+                        {{ title }}
+                    {% endif %}
+                {% endblock %}
+            </p>
+            {% block breadcrumbs %}
+                {% include 'includes/breadcrumbs.html' %}
+            {% endblock %}
+        </header>
+        <hr>
         {% block body_content %}{% endblock %}
-    </div>
+    </main>
+    {% block footer %}
+        {#        <footer class="footer">#}
+        {#            <div class="content has-text-centered">#}
+        {#                {% include 'includes/footer.html' %}#}
+        {#            </div>#}
+        {#        </footer>#}
+    {% endblock %}
 {% endblock %}
 </body>
 </html>
