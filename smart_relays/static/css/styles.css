@@ -2,7 +2,7 @@
     height: 3.5rem;
 }
 
-.aside {
+aside {
     position: fixed;
     top: 3.5rem;
     padding-left: 0.5rem;
@@ -17,15 +17,27 @@ main {
     padding: 0 1rem;
 }
 
-@media (width <= 500px) {
-    .aside {
+@media (width <= 600px) {
+    aside {
         padding-top: 3.8rem;
+        padding-left: 0;
         position: static;
         width: 100%;
+        text-align: center;
     }
 
     main {
         margin-left: 0;
         margin-top: 0;
+    }
+
+    .menu-label {
+        font-weight: bold;
+    }
+
+    li > ul {
+        padding-left: 0!important;
+        border-left: 1px solid #dbdbdb!important;
+        border-right: 1px solid #dbdbdb!important;
     }
 }

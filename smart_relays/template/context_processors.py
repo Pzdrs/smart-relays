@@ -9,3 +9,9 @@ def defaults(request: HttpRequest):
             'title': get_project_config().default_title,
         }
     }
+
+
+def menu(request: HttpRequest):
+    return {
+        'menu': get_project_config().menu,
+    }
