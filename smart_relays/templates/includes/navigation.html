@@ -16,7 +16,9 @@
     <div id="navbarBasicExample" class="navbar-menu">
         <div class="navbar-end">
             <div class="navbar-item">
-                <a class="button is-light">Log out</a>
+                <a href="{% url 'accounts:logout' %}">
+                    <i class="fa-solid fa-right-to-bracket fa-lg"></i>
+                </a>
             </div>
         </div>
     </div>

@@ -1,10 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView
 
 from relays.models import Relay, RelayAuditRecord
 from smart_relays.views import SmartRelaysView
 
 
-class RelayListView(SmartRelaysView, ListView):
+class RelayListView(LoginRequiredMixin, SmartRelaysView, ListView):
     queryset = Relay.objects.all()
     template_name = 'relay_list.html'
     title = 'Relays'
@@ -15,7 +16,7 @@ class RelayListView(SmartRelaysView, ListView):
 
 class RelayDetailView(SmartRelaysView, DetailView):
     model = Relay
-    template_name = 'login.html'
+    template_name = 'relay_detail.html'
 
     def get_title(self):
         return self.object.name
