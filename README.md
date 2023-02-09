@@ -13,3 +13,4 @@ for easy integration with other applications, such as **Node-RED** or **Home Ass
 - [ ] Built-in HTTP API
 - [ ] Scheduled tasks
 - [ ] Per-relay audit logs
+- [ ] Websocket based reactive UI

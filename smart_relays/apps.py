@@ -11,5 +11,7 @@ class SmartRelaysConfig(AppConfig):
     menu = [
         Label('General'),
         Link('Relays', reverse_lazy('relays:relay-list')),
-        Label('Advanced')
+        Label('Advanced'),
+        Link('Users', ''),
+        Link('Audit Log', ''),
     ]

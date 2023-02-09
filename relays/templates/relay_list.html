@@ -1,4 +1,9 @@
 {% extends 'base_template.html' %}
+{% load static %}
+{% block extra_js %}
+    <script src="{% static 'js/relay_control.js' %}" defer></script>
+    {{ relay_states|json_script:"relays" }}
+{% endblock %}
 {% block body_content %}
     <div class="columns is-multiline">
         {% for relay in object_list %}

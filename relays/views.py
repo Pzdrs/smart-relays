@@ -11,7 +11,14 @@ class RelayListView(LoginRequiredMixin, SmartRelaysView, ListView):
     title = 'Relays'
 
     def get_context_data(self, **kwargs):
-        return super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
+        context['relay_states'] = {
+            1: True,
+            2: False,
+            3: True,
+            4: False,
+        }
+        return context
 
 
 class RelayDetailView(SmartRelaysView, DetailView):

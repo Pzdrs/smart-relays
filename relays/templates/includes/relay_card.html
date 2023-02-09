@@ -1,25 +1,38 @@
 <div class="card">
-    <header class="card-header">
+    <header id="relayCardHeader{{ relay.pk }}" class="relay-card-header card-header">
         <p class="card-header-title">
             {{ relay.name }}
         </p>
         <button class="card-header-icon" aria-label="more options">
-      <span class="icon">
-        <i class="fas fa-angle-down" aria-hidden="true"></i>
-      </span>
+            <input id="relaySwitch{{ relay.pk }}" type="checkbox" class="switch is-rounded is-success"
+                   onclick="toggleRelay({{ relay.pk }})">
+            <label for="relaySwitch{{ relay.pk }}"></label>
         </button>
     </header>
     <div class="card-content">
         <div class="content">
-            {{ description }}
-            <br>
-            Created:
-            <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+            <p class="pb-2">
+                {% if relay.description %}
+                    {{ relay.description }}
+                {% else %}
+                    <span class="has-text-grey-light">No description</span>
+                {% endif %}
+            </p>
+            Created: {{ relay.created_at }}
         </div>
     </div>
     <footer class="card-footer">
-        <a href="#" class="card-footer-item">Save</a>
-        <a href="#" class="card-footer-item">Edit</a>
-        <a href="#" class="card-footer-item">Delete</a>
+        <a href="{% url 'relays:relay-detail' 1 %}" class="card-footer-item">
+            <i class="fa-solid fa-circle-info pr-2"></i>
+            Detail
+        </a>
+        <a href="{% url 'relays:relay-update' 1 %}" class="card-footer-item has-text-info">
+            <i class="fa-solid fa-pen-to-square pr-2"></i>
+            Edit
+        </a>
+        <a href="{% url 'relays:relay-delete' 1 %}" class="card-footer-item has-text-danger">
+            <i class="fa-solid fa-trash pr-2"></i>
+            Delete
+        </a>
     </footer>
 </div>
