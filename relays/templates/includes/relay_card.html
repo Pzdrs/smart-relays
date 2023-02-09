@@ -1,3 +1,5 @@
+{% load template %}
+{% load data %}
 <div class="card">
     <header id="relayCardHeader{{ relay.pk }}" class="relay-card-header card-header">
         <p class="card-header-title">
@@ -11,14 +13,24 @@
     </header>
     <div class="card-content">
         <div class="content">
-            <p class="pb-2">
+            <p>
                 {% if relay.description %}
                     {{ relay.description }}
                 {% else %}
                     <span class="has-text-grey-light">No description</span>
                 {% endif %}
             </p>
-            Created: {{ relay.created_at }}
+            <p class="m-0">
+                <b>Created:</b> {{ relay.created_at }}
+            </p>
+            <p class="m-0">
+                <b>Last state change:</b>
+                {% if last_relay_state_changes|dict_lookup:relay.pk %}
+                    {{ last_relay_state_changes|dict_lookup:relay.pk|time_delta_nice }}
+                {% else %}
+                    <span class="has-text-grey-light">No history</span>
+                {% endif %}
+            </p>
         </div>
     </div>
     <footer class="card-footer">

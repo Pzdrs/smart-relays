@@ -6,7 +6,7 @@ from relays.models import Relay, RelayStateChange
 
 @admin.register(Relay)
 class RelayAdmin(ModelAdmin):
-    list_display = ('name', 'state', 'description')
+    list_display = ('name', 'description')
 
 
 @admin.register(RelayStateChange)

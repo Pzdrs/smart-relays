@@ -1,4 +1,3 @@
-// on page load
 document.addEventListener('DOMContentLoaded', function () {
     const relays = JSON.parse(document.querySelector('#relays').innerText);
     for (const [id, state] of Object.entries(relays)) {
