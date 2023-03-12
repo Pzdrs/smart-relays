@@ -1,8 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.forms import ModelForm
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView
 
-from relays.models import Relay, RelayAuditRecord, RelayStateChange
+from relays.forms import RelayUpdateForm
+from relays.models import Relay, RelayStateChange
 from relays.utils.relay import last_known_relay_state, last_know_relay_state_change_timestamp
 from smart_relays.views import SmartRelaysView
 
@@ -29,14 +29,23 @@ class RelayDetailView(SmartRelaysView, DetailView):
     model = Relay
     template_name = 'relay_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['state_history'] = RelayStateChange.objects.get_relay(self.object)
+        return context
+
     def get_title(self):
         return self.object.name
 
 
-class RelayUpdateView(UpdateView):
+class RelayUpdateView(SmartRelaysView, UpdateView):
     model = Relay
+    form_class = RelayUpdateForm
     template_name = 'relay_form.html'
-    fields = ('name', 'description')
+    title = 'Relay update'
+
+    def get_page_subtitle(self):
+        return self.object
 
 
 class RelayDeleteView(DeleteView):

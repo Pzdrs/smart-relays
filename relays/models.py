@@ -49,8 +49,11 @@ class RelayAuditRecord(Model):
 
 
 class RelayStateChangeQuerySet(QuerySet):
+    def get_relay(self, relay: Relay):
+        return self.filter(relay_id=relay.pk)
+
     def last_known_state(self, relay: Relay):
-        return self.filter(relay_id=relay.pk).last()
+        return self.get_relay(relay).last()
 
 
 class RelayStateChange(RelayAuditRecord):

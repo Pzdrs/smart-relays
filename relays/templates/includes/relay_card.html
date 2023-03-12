@@ -34,15 +34,15 @@
         </div>
     </div>
     <footer class="card-footer">
-        <a href="{% url 'relays:relay-detail' 1 %}" class="card-footer-item">
+        <a href="{% url 'relays:relay-detail' relay.pk %}" class="card-footer-item">
             <i class="fa-solid fa-circle-info pr-2"></i>
             Detail
         </a>
-        <a href="{% url 'relays:relay-update' 1 %}" class="card-footer-item has-text-info">
+        <a href="{% url 'relays:relay-update' relay.pk %}" class="card-footer-item has-text-info">
             <i class="fa-solid fa-pen-to-square pr-2"></i>
             Edit
         </a>
-        <a href="{% url 'relays:relay-delete' 1 %}" class="card-footer-item has-text-danger">
+        <a class="card-footer-item has-text-danger modal-button" data-target="delete-relay-modal">
             <i class="fa-solid fa-trash pr-2"></i>
             Delete
         </a>

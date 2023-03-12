@@ -1,4 +1,79 @@
 {% extends 'base_template.html' %}
 {% block body_content %}
-    {{ object }}
+    <p class="is-size-4">Overview</p>
+    <div class="columns">
+        <div class="column">
+            <p class="has-text-weight-bold">Name</p>
+            <p class="has-text-weight-bold">Description</p>
+        </div>
+        <div class="column">
+            <p>{{ object.name }}</p>
+            <p>{{ object.description }}</p>
+        </div>
+    </div>
+    <p class="is-size-4">State history</p>
+    {% for state in state_history %}
+        {{ state.timestamp|json_script:'timestamp' }}
+        {{ state.state|json_script:'state' }}
+    {% endfor %}
+
+    <canvas id="myChart"></canvas>
+    <script>
+        function getStateLabel(state) {
+            if (state === 0) {
+                return 'OFF';
+            } else if (state === 1) {
+                return 'ON';
+            } else {
+                return '';
+            }
+        }
+
+        const data = {
+            "2022-02-15T08:45:00": false,
+            "2022-05-22T21:00:15": true,
+            "2021-12-31T23:59:59": false,
+            "2022-07-04T17:00:00": true,
+            "2022-09-12T03:15:30": false,
+            "2022-06-28T13:30:45": true,
+            "2022-01-01T00:00:00": false,
+            "2022-04-22T10:45:15": true,
+            "2022-08-08T08:00:00": false,
+            "2022-02-14T23:59:59": true,
+            "2022-10-31T13:30:00": false,
+            "2022-11-01T00:00:00": true,
+            "2022-09-21T17:45:15": false,
+        }
+        new Chart(document.getElementById('myChart'), {
+            type: 'line',
+            options: {
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            callback: value => getStateLabel(value)
+                        }
+                    }
+                }
+            },
+            data: {
+                labels: Object.keys(data),
+                datasets: [
+                    {
+                        label: 'State history',
+                        data: Object.values(data),
+                        stepped: true
+                    }
+                ],
+            }
+        });
+    </script>
+    <p class="is-size-4">Permissions</p>
 {% endblock %}

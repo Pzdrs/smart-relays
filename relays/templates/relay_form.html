@@ -1,7 +1,26 @@
 {% extends 'base_template.html' %}
 {% block body_content %}
-    <form method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit">
-    </form>
+    <div class="columns">
+        <div class="column is-full is-6-desktop">
+            <form method="post">{% csrf_token %}
+                {% for field in form %}
+                    <div class="field">
+                        <label for="{{ field.auto_id }}" class="label">{{ field.label }}</label>
+                        <div class="control">
+                            {{ field }}
+                        </div>
+                        <p class="help">{{ field.help_text }}</p>
+                    </div>
+                {% endfor %}
+                <div class="field is-grouped">
+                    <div class="control">
+                        <input type="submit" class="button is-link" value="Save"/>
+                    </div>
+                    <div class="control">
+                        <a href="{% url 'relays:relay-list' %}" class="button is-link is-light">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}

@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -5,6 +6,9 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="{% block description %}{{ defaults.description }}{% endblock %}">
+    <meta name="keywords" content="{% block keywords %}{{ defaults.keywords }}{% endblock %}">
+    <link rel="icon" href="{% static 'logo.png' %}">
     <title>
         {% block title %}
             {% if title %}
@@ -26,7 +30,7 @@
     {% endblock %}
     <main>
         <header>
-            <p class="is-size-3 mb-3">
+            <p class="is-size-3">
                 {% block page_title %}
                     {% if page_title %}
                         {{ page_title }}
@@ -35,6 +39,14 @@
                     {% endif %}
                 {% endblock %}
             </p>
+            <p class="is-size-6 has-text-grey">
+                {% block page_subtitle %}
+                    {% if page_subtitle %}
+                        {{ page_subtitle }}
+                    {% endif %}
+                {% endblock %}
+            </p>
+            <p class="mb-3"></p>
             {% block breadcrumbs %}
                 {% include 'includes/breadcrumbs.html' %}
             {% endblock %}
@@ -49,6 +61,7 @@
         {#            </div>#}
         {#        </footer>#}
     {% endblock %}
+    {% block modals %}{% endblock %}
 {% endblock %}
 </body>
 </html>
