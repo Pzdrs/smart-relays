@@ -1,0 +1,23 @@
+{% extends 'base_modal.html' %}
+{% block id %}delete-relay-modal{% endblock %}
+{% block animation %}modal-fx-fadeInScale{% endblock %}
+{% block header %}
+    <p class="card-header-title">
+        Are you absolutely sure?
+    </p>
+{% endblock %}
+{% block content %}
+    Please type <b>Pzdrs/remeslovkostce-toolbox</b> to confirm.
+    <form action="">
+        <div class="field">
+            <div class="control">
+                <input class="input" type="text">
+            </div>
+        </div>
+        <div class="field">
+            <div class="control">
+                <input type="submit" class="button is-danger is-outlined is-fullwidth" disabled/>
+            </div>
+        </div>
+    </form>
+{% endblock %}

@@ -36,8 +36,20 @@ main {
     }
 
     li > ul {
-        padding-left: 0!important;
-        border-left: 1px solid #dbdbdb!important;
-        border-right: 1px solid #dbdbdb!important;
+        padding-left: 0 !important;
+        border-left: 1px solid #dbdbdb !important;
+        border-right: 1px solid #dbdbdb !important;
     }
+}
+
+.add_relay_button {
+    position: fixed;
+    right: 1rem;
+    top: 45rem
+}
+
+.add_relay_button_text {
+    font-weight: bold;
+    letter-spacing: .1rem;
+    text-transform: uppercase
 }
