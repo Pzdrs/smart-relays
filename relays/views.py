@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, DetailView, DeleteView, UpdateView
+from django.views import View
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView
 
 from relays.forms import RelayUpdateForm
-from relays.models import Relay, RelayStateChange
+from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog
 from relays.utils.relay import last_known_relay_state, last_know_relay_state_change_timestamp
 from smart_relays.views import SmartRelaysView
 
@@ -55,3 +56,15 @@ class RelayUpdateView(SmartRelaysView, UpdateView):
 
 class RelayDeleteView(DeleteView):
     model = Relay
+
+
+class AuditLogView(SmartRelaysView, TemplateView):
+    template_name = 'audit_log.html'
+    title = 'Audit Log'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        create_logs = [log for log in RelayCreateLog.objects.all()]
+        update_logs = [log for log in RelayUpdateLog.objects.all()]
+        context['logs'] = sorted(create_logs + update_logs, key=lambda log: log.timestamp, reverse=True)
+        return context
