@@ -24,7 +24,7 @@ class RelayQuerySet(QuerySet):
 
 class Relay(BaseModel):
     # Queue that stores the requests when an update is issues to a Relay object
-    update_requests = Queue()
+    _update_requests = Queue()
 
     name = models.CharField(max_length=100, default=default_relay_name)
     description = models.TextField(max_length=65535, blank=True, null=True)
@@ -38,10 +38,8 @@ class Relay(BaseModel):
         return reverse('relays:relay-detail', args=(self.pk,))
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        request = self.update_requests.get()
-        if self._state.adding:
-            pass
-        else:
+        if not self._state.adding:
+            request = self._update_requests.get()
             original = Relay.objects.get(pk=self.pk)
             for field in self._meta.fields:
                 original_value = getattr(original, field.name)
@@ -55,6 +53,10 @@ class Relay(BaseModel):
                     )
                     update_log.save()
         super().save(force_insert, force_update, using, update_fields)
+
+    @staticmethod
+    def get_last_update_user() -> User:
+        return Relay._update_requests.get().user
 
 
 class RelayAuditRecord(Model):
@@ -80,7 +82,7 @@ class RelayStateChange(RelayAuditRecord):
     objects = RelayStateChangeQuerySet.as_manager()
 
 
-class RelayCreationLog(RelayAuditRecord):
+class RelayCreateLog(RelayAuditRecord):
     pass
 
 
