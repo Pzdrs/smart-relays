@@ -47,6 +47,11 @@ class RelayUpdateView(SmartRelaysView, UpdateView):
     def get_page_subtitle(self):
         return self.object
 
+    def post(self, request, *args, **kwargs):
+        # Put this request into a queue so that the save handler can have access to it
+        Relay.update_requests.put(request)
+        return super().post(request, *args, **kwargs)
+
 
 class RelayDeleteView(DeleteView):
     model = Relay
