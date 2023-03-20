@@ -15,6 +15,9 @@ class RelayListView(LoginRequiredMixin, SmartRelaysView, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['slots'] = 4
+        context['slots_used'] = 1
+        context['slots_left'] = 3
         context['relay_states'] = {
             relay.pk: last_known_relay_state(relay)
             for relay in self.get_queryset()

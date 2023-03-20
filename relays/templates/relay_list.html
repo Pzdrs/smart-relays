@@ -5,6 +5,9 @@
     <script src="{% static 'js/relay_control.js' %}" defer></script>
     {{ relay_states|json_script:"relays" }}
 {% endblock %}
+{% block status %}
+    <b>{{ slots_left }} slots left ({{ slots_used }}/{{ slots }})</b>
+{% endblock %}
 {% block body_content %}
     <div class="columns is-multiline">
         {% if not object_list %}

@@ -30,26 +30,34 @@
     {% endblock %}
     <main>
         <header>
-            <p class="is-size-3">
-                {% block page_title %}
-                    {% if page_title %}
-                        {{ page_title }}
-                    {% elif title %}
-                        {{ title }}
-                    {% endif %}
+            <div class="mb-3">
+                <p class="is-size-3">
+                    {% block page_title %}
+                        {% if page_title %}
+                            {{ page_title }}
+                        {% elif title %}
+                            {{ title }}
+                        {% endif %}
+                    {% endblock %}
+                </p>
+                <p class="is-size-6 has-text-grey">
+                    {% block page_subtitle %}
+                        {% if page_subtitle %}
+                            {{ page_subtitle }}
+                        {% endif %}
+                    {% endblock %}
+                </p>
+            </div>
+            <div class="is-flex is-justify-content-space-between">
+                {% block breadcrumbs %}
+                    <section>
+                        {% include 'includes/breadcrumbs.html' %}
+                    </section>
                 {% endblock %}
-            </p>
-            <p class="is-size-6 has-text-grey">
-                {% block page_subtitle %}
-                    {% if page_subtitle %}
-                        {{ page_subtitle }}
-                    {% endif %}
-                {% endblock %}
-            </p>
-            <p class="mb-3"></p>
-            {% block breadcrumbs %}
-                {% include 'includes/breadcrumbs.html' %}
-            {% endblock %}
+                <section>
+                    {% block status %}{% endblock %}
+                </section>
+            </div>
         </header>
         <hr>
         {% block body_content %}{% endblock %}

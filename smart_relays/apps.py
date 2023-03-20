@@ -13,5 +13,5 @@ class SmartRelaysConfig(AppConfig):
         Link('Relays', reverse_lazy('relays:relay-list')),
         Label('Advanced'),
         Link('Users', ''),
-        Link('Audit Log', ''),
+        Link('Audit Log', reverse_lazy('relays:audit-log'))
     ]
