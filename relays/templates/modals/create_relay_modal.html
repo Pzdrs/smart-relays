@@ -1,6 +1,19 @@
 {% extends 'base_modal.html' %}
+{% load template %}
 {% block id %}create-relay-modal{% endblock %}
 {% block animation %}modal-fx-fadeInScale{% endblock %}
+{% block header %}
+    <p class="card-header-title">
+        Create a new relay
+    </p>
+{% endblock %}
 {% block content %}
-    create modal
+    <form method="post" action="{% url 'relays:relay-create' %}">{% csrf_token %}
+        {% render_form create_form %}
+        <div class="field is-grouped">
+            <div class="control">
+                <input type="submit" class="button is-link" value="Save"/>
+            </div>
+        </div>
+    </form>
 {% endblock %}

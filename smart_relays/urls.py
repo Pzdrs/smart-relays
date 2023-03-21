@@ -6,7 +6,8 @@ from smart_relays.utils.config import get_project_config
 
 urlpatterns = [
     path('', lambda request: redirect(get_project_config().default_page, permanent=True)),
-    path("accounts/", include('accounts.urls')),
+    path('api/', include('api.urls')),
+    path('accounts/', include('accounts.urls')),
     path('relays/', include('relays.urls')),
     path('admin/', admin.site.urls),
 ]

@@ -1,3 +1,4 @@
+from django.forms import Form
 from django.template.defaulttags import register
 
 
@@ -20,3 +21,8 @@ def time_delta_nice(date_time):
         return f'{delta.days // 30} months ago'
     else:
         return f'{delta.days // 365} years ago'
+
+
+@register.inclusion_tag('includes/form.html')
+def render_form(form: Form):
+    return {'form': form}

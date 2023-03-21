@@ -37,6 +37,16 @@ class Relay(BaseModel):
     def get_absolute_url(self):
         return reverse('relays:relay-detail', args=(self.pk,))
 
+    def get_current_state(self):
+        """
+        Returns the current state of a relay
+        if no prior states have been recorded, False is returned by default
+        """
+        current_state = RelayStateChange.objects.last_known_state(self)
+        if current_state is None:
+            return False
+        return True
+
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self._state.adding:
             request = self._update_requests.get()
@@ -55,7 +65,10 @@ class Relay(BaseModel):
         super().save(force_insert, force_update, using, update_fields)
 
     @staticmethod
-    def get_last_update_user() -> User:
+    def get_last_update_user() -> User | None:
+        # If an empty queue is queried, it hangs up the main thread instead of throwing an exception smh
+        if Relay._update_requests.empty():
+            return None
         return Relay._update_requests.get().user
 
 

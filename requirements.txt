@@ -4,3 +4,5 @@ fontawesomefree==6.3.0
 python-decouple==3.8
 sqlparse==0.4.3
 tzdata==2022.7
+
+djangorestframework~=3.14.0

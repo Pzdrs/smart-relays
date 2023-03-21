@@ -1,8 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.forms import Field
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView
 
-from relays.forms import RelayUpdateForm
+from relays.forms import RelayUpdateForm, RelayCreateForm
 from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog
 from relays.utils.relay import last_known_relay_state, last_know_relay_state_change_timestamp
 from smart_relays.views import SmartRelaysView
@@ -18,6 +21,7 @@ class RelayListView(LoginRequiredMixin, SmartRelaysView, ListView):
         context['slots'] = 4
         context['slots_used'] = 1
         context['slots_left'] = 3
+        context['create_form'] = RelayCreateForm()
         context['relay_states'] = {
             relay.pk: last_known_relay_state(relay)
             for relay in self.get_queryset()
@@ -55,6 +59,13 @@ class RelayUpdateView(SmartRelaysView, UpdateView):
         # Put this request into a queue so that the save handler can have access to it
         Relay._update_requests.put(request)
         return super().post(request, *args, **kwargs)
+
+
+class RelayCreateView(SmartRelaysView, CreateView):
+    http_method_names = ['post']
+    model = Relay
+    form_class = RelayCreateForm
+    success_url = reverse_lazy('relays:relay-list')
 
 
 class RelayDeleteView(DeleteView):
