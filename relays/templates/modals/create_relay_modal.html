@@ -10,10 +10,8 @@
 {% block content %}
     <form method="post" action="{% url 'relays:relay-create' %}">{% csrf_token %}
         {% render_form create_form %}
-        <div class="field is-grouped">
-            <div class="control">
-                <input type="submit" class="button is-link" value="Save"/>
-            </div>
+        <div class="field">
+            <input type="submit" class="button is-link" value="Save"/>
         </div>
     </form>
 {% endblock %}

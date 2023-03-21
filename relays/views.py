@@ -7,7 +7,9 @@ from django.views.generic import ListView, DetailView, DeleteView, UpdateView, T
 
 from relays.forms import RelayUpdateForm, RelayCreateForm
 from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog
-from relays.utils.relay import last_known_relay_state, last_know_relay_state_change_timestamp
+from relays.utils.relay import last_known_relay_state, last_know_relay_state_change_timestamp, relay_slots_breakdown
+from relays.utils.template import get_progress_bar_color
+from smart_relays.utils.config import get_project_config
 from smart_relays.views import SmartRelaysView
 
 
@@ -18,9 +20,14 @@ class RelayListView(LoginRequiredMixin, SmartRelaysView, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['slots'] = 4
-        context['slots_used'] = 1
-        context['slots_left'] = 3
+        slots_breakdown = relay_slots_breakdown()
+
+        context['slots_max'] = slots_breakdown[0]
+        context['slots_used'] = slots_breakdown[1]
+        context['slots_left'] = slots_breakdown[2]
+
+        context['progress_color'] = get_progress_bar_color(slots_breakdown[1] / slots_breakdown[0])
+
         context['create_form'] = RelayCreateForm()
         context['relay_states'] = {
             relay.pk: last_known_relay_state(relay)

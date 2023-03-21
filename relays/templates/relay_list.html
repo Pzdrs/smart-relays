@@ -6,7 +6,11 @@
     {{ relay_states|json_script:"relays" }}
 {% endblock %}
 {% block status %}
-    <b>{{ slots_left }} slots left ({{ slots_used }}/{{ slots }})</b>
+    <p class="has-text-grey-light">
+        {{ slots_used }}/{{ slots_max }} slots used (<b>{% if slots_left <= 0 %}Full{% else %}{{ slots_left }}
+        remaining{% endif %}</b>)
+    </p>
+    <progress class="progress {{ progress_color }}" value="{{ slots_used }}" max="{{ slots_max }}"></progress>
 {% endblock %}
 {% block body_content %}
     <div class="columns is-multiline">
