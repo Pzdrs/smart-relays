@@ -7,15 +7,9 @@
     </p>
 {% endblock %}
 {% block content %}
-    <p>You're about to delete <i>{{ relay_name }}</i> and all entities associated to it.</p>
-    <p>If you're aware of all the implications, please type <b><span
-            id="confirm-text">{{ confirm_text }}</span></b> to confirm.</p>
+    <p>You're about to delete <b>{{ relay_name }}</b> and all entities associated to it.</p>
+    <p>If you're sure, go ahead and delete this relay.</p>
     <form method="post" action="{% url 'relays:relay-delete' relay_id %}">{% csrf_token %}
-        <div class="field">
-            <div class="control">
-                <input class="input" type="text">
-            </div>
-        </div>
         <div class="field">
             <div class="control">
                 <input type="submit" class="button is-danger is-outlined is-fullwidth" value="Delete"/>

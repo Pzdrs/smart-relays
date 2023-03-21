@@ -47,9 +47,6 @@ class Relay(BaseModel):
             return False
         return True
 
-    def get_delete_confirm_text(self):
-        return f'relay{self.pk}'
-
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self._state.adding:
             request = self._update_requests.get()

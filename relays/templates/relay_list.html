@@ -33,7 +33,7 @@
 {% endblock %}
 {% block modals %}
     {% for relay in object_list %}
-        {% include 'modals/delete_relay_modal.html' with relay_id=relay.pk relay_name=relay.name confirm_text=relay.get_delete_confirm_text %}
+        {% include 'modals/delete_relay_modal.html' with relay_id=relay.pk relay_name=relay.name %}
     {% endfor %}
 
     {% include 'modals/create_relay_modal.html' %}
