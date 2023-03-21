@@ -2,7 +2,7 @@ from queue import Queue
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Manager, Model, QuerySet
+from django.db.models import Model, QuerySet
 from django.urls import reverse
 
 
@@ -46,6 +46,9 @@ class Relay(BaseModel):
         if current_state is None:
             return False
         return True
+
+    def get_delete_confirm_text(self):
+        return f'relay{self.pk}'
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self._state.adding:

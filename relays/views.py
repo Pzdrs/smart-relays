@@ -1,15 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.forms import Field
-from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views import View
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView
 
 from relays.forms import RelayUpdateForm, RelayCreateForm
 from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog
 from relays.utils.relay import last_known_relay_state, last_know_relay_state_change_timestamp, relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
-from smart_relays.utils.config import get_project_config
 from smart_relays.views import SmartRelaysView
 
 
@@ -76,7 +72,9 @@ class RelayCreateView(SmartRelaysView, CreateView):
 
 
 class RelayDeleteView(DeleteView):
+    http_method_names = ['post']
     model = Relay
+    success_url = reverse_lazy('relays:relay-list')
 
 
 class AuditLogView(SmartRelaysView, TemplateView):

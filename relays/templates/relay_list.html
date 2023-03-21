@@ -32,6 +32,9 @@
     </div>
 {% endblock %}
 {% block modals %}
-    {% include 'modals/delete_relay_modal.html' %}
+    {% for relay in object_list %}
+        {% include 'modals/delete_relay_modal.html' with relay_id=relay.pk relay_name=relay.name confirm_text=relay.get_delete_confirm_text %}
+    {% endfor %}
+
     {% include 'modals/create_relay_modal.html' %}
 {% endblock %}
