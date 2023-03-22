@@ -47,6 +47,9 @@ class Relay(BaseModel):
             return False
         return True
 
+    def get_audit_log(self):
+        return RelayUpdateLog.objects.get_relay(self)
+
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self._state.adding:
             request = self._update_requests.get()
@@ -72,10 +75,17 @@ class Relay(BaseModel):
         return Relay._update_requests.get().user
 
 
+class RelayAuditRecordQuerySet(QuerySet):
+    def get_relay(self, relay: Relay):
+        return self.filter(relay=relay)
+
+
 class RelayAuditRecord(Model):
     relay = models.ForeignKey(Relay, on_delete=models.CASCADE)
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    objects = RelayAuditRecordQuerySet.as_manager()
 
     class Meta:
         abstract = True

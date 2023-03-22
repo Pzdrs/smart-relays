@@ -1,4 +1,6 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView
 
@@ -43,6 +45,7 @@ class RelayDetailView(SmartRelaysView, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['state_history'] = RelayStateChange.objects.get_relay(self.object)
+        context['audit_log'] = self.object.get_audit_log()
         return context
 
     def get_title(self):
@@ -69,6 +72,12 @@ class RelayCreateView(SmartRelaysView, CreateView):
     model = Relay
     form_class = RelayCreateForm
     success_url = reverse_lazy('relays:relay-list')
+
+    def form_invalid(self, form):
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages.error(self.request, f'<b>{field}</b>: {error}')
+        return redirect(self.success_url)
 
 
 class RelayDeleteView(DeleteView):

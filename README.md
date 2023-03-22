@@ -14,3 +14,7 @@ for easy integration with other applications, such as **Node-RED** or **Home Ass
 - [ ] Scheduled tasks
 - [ ] Per-relay audit logs
 - [ ] Websocket based reactive UI
+## Bugs
+- Create relay validation rozmrdly
+  - space in name to replicate
+- Audit log xss

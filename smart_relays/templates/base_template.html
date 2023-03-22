@@ -60,6 +60,16 @@
             </div>
         </header>
         <hr>
+        {% block messages %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="notification {{ message.tags }}">
+                        <button class="delete" onclick="this.parentElement.remove()"></button>
+                        {{ message|safe }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endblock %}
         {% block body_content %}{% endblock %}
     </main>
     {% block footer %}

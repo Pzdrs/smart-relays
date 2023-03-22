@@ -3,24 +3,7 @@
 {% block body_content %}
     <div class="columns">
         <div class="column is-12">
-            {% if logs %}
-                <table class="table is-fullwidth is-hoverable">
-                    <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>User</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for record in logs %}
-                        {% render_audit_log record %}
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <span class="has-text-grey-light">No activity has been recorded so far</span>
-            {% endif %}
+            {% include 'includes/audit_log_table.html' with logs=logs %}
         </div>
         {% comment %}
         RESERVED FOR LIKE A FILTER MENU OR <SMTH></SMTH>
