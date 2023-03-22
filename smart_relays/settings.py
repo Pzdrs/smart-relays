@@ -13,6 +13,9 @@ import os
 from pathlib import Path
 from decouple import config
 from django.contrib import messages
+from django.urls import reverse_lazy
+
+from smart_relays.utils.config import get_project_config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'smart_relays',
     'relays',
+    'accounts',
     'api'
 ]
 
@@ -59,8 +63,7 @@ ROOT_URLCONF = 'smart_relays.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -104,6 +107,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+LOGIN_REDIRECT_URL = reverse_lazy('relays:relay-list')
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

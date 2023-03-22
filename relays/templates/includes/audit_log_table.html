@@ -1,0 +1,19 @@
+{% load render %}
+{% if logs %}
+    <table class="table is-fullwidth is-hoverable">
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>User</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for record in logs %}
+            {% render_audit_log record %}
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <span class="has-text-grey-light">No activity has been recorded so far</span>
+{% endif %}

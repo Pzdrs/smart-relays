@@ -1,4 +1,4 @@
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 
 
 class SmartRelaysLoginView(LoginView):
@@ -7,4 +7,5 @@ class SmartRelaysLoginView(LoginView):
 
 
 
-
+class SmartRelaysLogoutView(LogoutView):
+    template_name = 'logout.html'

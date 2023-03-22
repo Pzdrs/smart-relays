@@ -1,14 +1,14 @@
-from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView, \
+from django.contrib.auth.views import PasswordChangeView, PasswordChangeDoneView, \
     PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.urls import path
 
-from accounts.views import SmartRelaysLoginView
+from accounts.views import SmartRelaysLoginView, SmartRelaysLogoutView
 
 app_name = 'accounts'
 
 urlpatterns = [
     path("login/", SmartRelaysLoginView.as_view(), name="login"),
-    path("logout/", LogoutView.as_view(), name="logout"),
+    path("logout/", SmartRelaysLogoutView.as_view(), name="logout"),
     path(
         "password_change/", PasswordChangeView.as_view(), name="password_change"
     ),
