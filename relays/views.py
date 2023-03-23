@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView
+from django.views.generic.edit import FormMixin
 
 from relays.forms import RelayUpdateForm, RelayCreateForm
 from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog
@@ -76,7 +77,10 @@ class RelayCreateView(SmartRelaysView, CreateView):
     def form_invalid(self, form):
         for field, errors in form.errors.items():
             for error in errors:
-                messages.error(self.request, f'<b>{field}</b>: {error}')
+                if field == '__all__':
+                    messages.error(self.request, error)
+                else:
+                    messages.error(self.request, f'<b>{field}</b>: {error}')
         return redirect(self.success_url)
 
 

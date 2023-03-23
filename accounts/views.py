@@ -6,6 +6,5 @@ class SmartRelaysLoginView(LoginView):
     redirect_authenticated_user = True
 
 
-
 class SmartRelaysLogoutView(LogoutView):
     template_name = 'logout.html'

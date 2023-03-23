@@ -1,6 +1,7 @@
 from django import forms
 
 from relays.models import Relay
+from smart_relays.utils.config import get_project_config
 
 
 class RelayUpdateForm(forms.ModelForm):
@@ -25,3 +26,8 @@ class RelayCreateForm(forms.ModelForm):
             'name': 'The name of the relay',
             'description': 'A description of the relay',
         }
+
+    def clean(self):
+        if Relay.objects.count() >= get_project_config().max_relays:
+            raise forms.ValidationError('There are no relay slots left.')
+        return super().clean()
