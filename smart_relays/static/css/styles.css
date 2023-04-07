@@ -45,7 +45,7 @@ main {
 .add_relay_button {
     position: fixed;
     right: 1rem;
-    top: 45rem
+    top: 90vh;
 }
 
 .add_relay_button_text {

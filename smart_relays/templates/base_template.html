@@ -49,14 +49,11 @@
                 </p>
             </div>
             <div class="is-flex is-justify-content-space-between">
-                {% block breadcrumbs %}
-                    <section>
-                        {% include 'includes/breadcrumbs.html' %}
-                    </section>
-                {% endblock %}
-                <section>
+                {% block breadcrumbs %}{% endblock %}
+                <div></div>
+                <div>
                     {% block status %}{% endblock %}
-                </section>
+                </div>
             </div>
         </header>
         <hr>
