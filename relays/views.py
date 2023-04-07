@@ -12,7 +12,7 @@ from relays.utils.template import get_progress_bar_color
 from smart_relays.views import SmartRelaysView
 
 
-class RelayListView(LoginRequiredMixin, SmartRelaysView, ListView):
+class RelayListView(SmartRelaysView, ListView):
     queryset = Relay.objects.all()
     template_name = 'relay_list.html'
     title = 'Relays'
@@ -84,7 +84,7 @@ class RelayCreateView(SmartRelaysView, CreateView):
         return redirect(self.success_url)
 
 
-class RelayDeleteView(DeleteView):
+class RelayDeleteView(LoginRequiredMixin, DeleteView):
     http_method_names = ['post']
     model = Relay
     success_url = reverse_lazy('relays:relay-list')

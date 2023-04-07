@@ -1,10 +1,17 @@
+from django.contrib.auth.mixins import AccessMixin
 from django.views.generic.base import ContextMixin
 
 
-class SmartRelaysView(ContextMixin):
-    title = None
-    page_title = None
-    page_subtitle = None
+class SmartRelaysView(AccessMixin):
+    title: str = None
+    page_title: str = None
+    page_subtitle: str = None
+    login_required: bool = True
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated and self.login_required:
+            return self.handle_no_permission()
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

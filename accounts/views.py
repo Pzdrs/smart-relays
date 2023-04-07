@@ -1,10 +1,33 @@
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib import messages
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
+from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy, reverse
+
+from accounts.forms import SmartRelaysPasswordChangeForm
+from smart_relays.utils.config import get_project_config
+from smart_relays.views import SmartRelaysView
 
 
-class SmartRelaysLoginView(LoginView):
+class SmartRelaysLoginView(SmartRelaysView, LoginView):
     template_name = 'sign_in.html'
     redirect_authenticated_user = True
+    title = 'Sign in'
+    login_required = False
 
 
-class SmartRelaysLogoutView(LogoutView):
+class SmartRelaysLogoutView(SmartRelaysView, LogoutView):
     template_name = 'logout.html'
+    title = 'Signed out'
+
+
+class SmartRelaysPasswordChangeView(SmartRelaysView, PasswordChangeView):
+    form_class = SmartRelaysPasswordChangeForm
+    template_name = 'password_change.html'
+    title = 'Change password'
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Password changed successfully.')
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('accounts:password-change')

@@ -9,10 +9,12 @@ class SmartRelaysConfig(AppConfig):
     default_title = 'Smart Relays'
     default_page = reverse_lazy('relays:relay-list')
     max_relays = 8
-    menu = [
+    menu = (
         Label('General'),
         Link('Relays', reverse_lazy('relays:relay-list')),
         Label('Advanced'),
         Link('Users', ''),
-        Link('Audit Log', reverse_lazy('relays:audit-log'))
-    ]
+        Link('Audit Log', reverse_lazy('relays:audit-log')),
+        Label('Preferences'),
+        Link('Change password', reverse_lazy('accounts:password-change')),
+    )
