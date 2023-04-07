@@ -1,10 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
-from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 
 from accounts.forms import SmartRelaysPasswordChangeForm
-from smart_relays.utils.config import get_project_config
 from smart_relays.views import SmartRelaysView
 
 

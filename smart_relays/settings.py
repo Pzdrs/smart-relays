@@ -141,3 +141,7 @@ MESSAGE_TAGS = {
     messages.INFO: 'is-info',
     messages.DEBUG: 'is-light',
 }
+
+# CELERY
+CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_BACKEND = 'rpc://'
