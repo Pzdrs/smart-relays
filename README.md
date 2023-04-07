@@ -7,13 +7,15 @@ The core of the project is a Django application, written in Python, that provide
 for controlling relays, and is backed by a SQLite database. The built-in HTTP API allows
 for easy integration with other applications, such as **Node-RED** or **Home Assistant**
 ## Features
+### Nice to haves
+- [ ] MQTT support
+- [ ] Websocket based reactive UI
+### Must haves
 - [ ] Support for multiple users
 - [ ] Per-relay user permissions
-- [ ] MQTT support
-- [ ] Built-in HTTP API
+- [x] Per-relay audit logs
 - [ ] Scheduled tasks
-- [ ] Per-relay audit logs
-- [ ] Websocket based reactive UI
+- [ ] Built-in HTTP API
 ## Bugs
 - Create relay validation rozmrdly
   - space in name to replicate
