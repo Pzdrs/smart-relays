@@ -83,6 +83,11 @@ class RelayCreateView(SmartRelaysView, CreateView):
                     messages.error(self.request, f'<b>{field}</b>: {error}')
         return redirect(self.success_url)
 
+    def post(self, request, *args, **kwargs):
+        # Put this request into a queue so that the save handler can have access to it
+        Relay._update_requests.put(request)
+        return super().post(request, *args, **kwargs)
+
 
 class RelayDeleteView(LoginRequiredMixin, DeleteView):
     http_method_names = ['post']

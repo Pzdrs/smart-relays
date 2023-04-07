@@ -16,7 +16,3 @@ for easy integration with other applications, such as **Node-RED** or **Home Ass
 - [x] Per-relay audit logs
 - [ ] Scheduled tasks
 - [ ] Built-in HTTP API
-## Bugs
-- Create relay validation rozmrdly
-  - space in name to replicate
-- Audit log xss
