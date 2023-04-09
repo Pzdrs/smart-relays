@@ -1,9 +1,14 @@
 from queue import Queue
 
-from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Model, QuerySet, Q
 from django.urls import reverse
+
+from accounts.models import User
+
+
+def default_relay_name() -> str:
+    return f'Relay #{Relay.objects.count() + 1}'
 
 
 class BaseModel(models.Model):
@@ -24,10 +29,6 @@ class RelayQuerySet(QuerySet):
 
 
 class Relay(BaseModel):
-    @staticmethod
-    def default_relay_name() -> str:
-        return f'Relay #{Relay.objects.count() + 1}'
-
     # Queue that stores the requests when an update is issues to a Relay object
     update_requests = Queue()
 
