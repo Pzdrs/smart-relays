@@ -8,10 +8,25 @@ class RelayUpdateForm(forms.ModelForm):
     class Meta:
         model = Relay
         fields = '__all__'
+        labels = {
+            'user': ''
+        }
         widgets = {
+            'user': forms.HiddenInput(),
             'name': forms.TextInput(attrs={'class': 'input'}),
             'description': forms.Textarea(attrs={'class': 'textarea'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['user'].required = False
+
+    def clean(self):
+        try:
+            if self.instance.user != self.cleaned_data['user']:
+                raise forms.ValidationError('You cannot change the owner of a relay.')
+        except KeyError:
+            return super().clean()
 
 
 class RelayCreateForm(forms.ModelForm):

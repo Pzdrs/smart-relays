@@ -38,7 +38,7 @@ class RelayDetailView(SmartRelaysView, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['state_history'] = RelayStateChange.objects.get_relay(self.object)
+        context['state_history'] = RelayStateChange.objects.for_relay(self.object)
         context['audit_log'] = self.object.get_audit_log()
         return context
 
