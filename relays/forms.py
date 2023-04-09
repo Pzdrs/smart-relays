@@ -18,7 +18,11 @@ class RelayCreateForm(forms.ModelForm):
     class Meta:
         model = Relay
         fields = '__all__'
+        labels = {
+            'user': ''
+        }
         widgets = {
+            'user': forms.HiddenInput(),
             'name': forms.TextInput(attrs={'class': 'input'}),
             'description': forms.Textarea(attrs={'class': 'input'}),
         }
