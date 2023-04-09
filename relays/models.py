@@ -2,12 +2,8 @@ from queue import Queue
 
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Model, QuerySet
+from django.db.models import Model, QuerySet, Q
 from django.urls import reverse
-
-
-def default_relay_name():
-    return "Relay #" + str(Relay.objects.count() + 1)
 
 
 class BaseModel(models.Model):
@@ -18,13 +14,22 @@ class BaseModel(models.Model):
         abstract = True
 
 
+# ----------------------------------------------
+# Relay Models
+# ----------------------------------------------
+
 class RelayQuerySet(QuerySet):
-    pass
+    def for_user(self, user: User) -> 'RelayQuerySet':
+        return self.all()
 
 
 class Relay(BaseModel):
+    @staticmethod
+    def default_relay_name() -> str:
+        return f'Relay #{Relay.objects.count() + 1}'
+
     # Queue that stores the requests when an update is issues to a Relay object
-    _update_requests = Queue()
+    update_requests = Queue()
 
     name = models.CharField(max_length=100, default=default_relay_name)
     description = models.TextField(max_length=65535, blank=True, null=True)
@@ -52,7 +57,7 @@ class Relay(BaseModel):
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self._state.adding:
-            request = self._update_requests.get()
+            request = self.update_requests.get()
             original = Relay.objects.get(pk=self.pk)
             for field in self._meta.fields:
                 original_value = getattr(original, field.name)
@@ -75,11 +80,14 @@ class Relay(BaseModel):
     @staticmethod
     def get_last_update_user() -> User | None:
         # If an empty queue is queried, it hangs up the main thread instead of throwing an exception smh
-        if Relay._update_requests.empty():
+        if Relay.update_requests.empty():
             return None
-        return Relay._update_requests.get().user
+        return Relay.update_requests.get().user
 
 
+# ----------------------------------------------
+# Audit Log Models
+# ----------------------------------------------
 class RelayAuditRecordQuerySet(QuerySet):
     def get_relay(self, relay: Relay):
         return self.filter(relay=relay)
@@ -118,3 +126,17 @@ class RelayUpdateLog(RelayAuditRecord):
     field = models.CharField(max_length=50)
     old_value = models.CharField(max_length=65535)
     new_value = models.CharField(max_length=65535)
+
+
+# ----------------------------------------------
+# User Permissions
+# ----------------------------------------------
+class UserRelayPermission(BaseModel):
+    class PermissionLevel(models.TextChoices):
+        read_only = 'readonly', 'Read Only'
+        control = 'control', 'Control'
+        all_access = 'all', 'All Access'
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    relay = models.ForeignKey(Relay, on_delete=models.CASCADE)
+    permission_level = models.CharField(max_length=10, choices=PermissionLevel.choices)

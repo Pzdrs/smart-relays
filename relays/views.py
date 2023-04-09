@@ -13,7 +13,6 @@ from smart_relays.views import SmartRelaysView
 
 
 class RelayListView(SmartRelaysView, ListView):
-    queryset = Relay.objects.all()
     template_name = 'relay_list.html'
     title = 'Relays'
 
@@ -37,6 +36,9 @@ class RelayListView(SmartRelaysView, ListView):
             for relay in self.get_queryset()
         }
         return context
+
+    def get_queryset(self):
+        return Relay.objects.for_user(self.request.user)
 
 
 class RelayDetailView(SmartRelaysView, DetailView):
@@ -64,7 +66,7 @@ class RelayUpdateView(SmartRelaysView, UpdateView):
 
     def post(self, request, *args, **kwargs):
         # Put this request into a queue so that the save handler can have access to it
-        Relay._update_requests.put(request)
+        Relay.update_requests.put(request)
         return super().post(request, *args, **kwargs)
 
 
@@ -85,7 +87,7 @@ class RelayCreateView(SmartRelaysView, CreateView):
 
     def post(self, request, *args, **kwargs):
         # Put this request into a queue so that the save handler can have access to it
-        Relay._update_requests.put(request)
+        Relay.update_requests.put(request)
         return super().post(request, *args, **kwargs)
 
 
