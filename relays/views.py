@@ -27,14 +27,6 @@ class RelayListView(SmartRelaysView, ListView):
         context['progress_color'] = get_progress_bar_color(slots_breakdown[1] / slots_breakdown[0])
 
         context['create_form'] = RelayCreateForm()
-        context['relay_states'] = {
-            relay.pk: last_known_relay_state(relay)
-            for relay in self.get_queryset()
-        }
-        context['last_relay_state_changes'] = {
-            relay.pk: last_know_relay_state_change_timestamp(relay)
-            for relay in self.get_queryset()
-        }
         return context
 
     def get_queryset(self):

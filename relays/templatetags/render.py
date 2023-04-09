@@ -2,7 +2,8 @@ from django import template
 from django.utils.safestring import mark_safe
 from django.utils.text import Truncator
 
-from relays.models import RelayAuditRecord, RelayUpdateLog, RelayCreateLog
+from accounts.models import User
+from relays.models import RelayAuditRecord, RelayUpdateLog, RelayCreateLog, Relay
 
 register = template.Library()
 
@@ -51,3 +52,11 @@ def render_audit_log(log: RelayAuditRecord):
             </tr>
             '''
         )
+
+
+@register.inclusion_tag('includes/relay_card.html', takes_context=True)
+def render_relay_card(context, relay: Relay):
+    return {
+        'relay': relay,
+        'permission': relay.get_permission_level(context.request.user)
+    }

@@ -1,13 +1,21 @@
 {% load template %}
 {% load data %}
 <div class="card">
-    <header id="relayCardHeader{{ relay.pk }}" class="relay-card-header card-header">
+    <header
+            id="relayCardHeader{{ relay.pk }}"
+            class="relay-card-header card-header {% if relay.get_current_state.new_state %}has-background-success-light{% else %}has-background-danger-light{% endif %}"
+    >
         <p class="card-header-title">
             {{ relay.name }}
         </p>
         <button class="card-header-icon" aria-label="more options">
-            <input id="relaySwitch{{ relay.pk }}" type="checkbox" class="switch is-rounded is-success"
-                   onclick="toggleRelay({{ relay.pk }})">
+            <input
+                    id="relaySwitch{{ relay.pk }}"
+                    type="checkbox"
+                    class="switch is-rounded {% if relay.get_current_state.new_state %}is-success{% endif %}"
+                    onclick="toggleRelay({{ relay.pk }})"
+                    {% if relay.get_current_state.new_state %}checked{% endif %}
+            >
             <label for="relaySwitch{{ relay.pk }}"></label>
         </button>
     </header>
@@ -25,8 +33,8 @@
             </p>
             <p class="m-0">
                 <b>Last state change:</b>
-                {% if last_relay_state_changes|dict_lookup:relay.pk %}
-                    {{ last_relay_state_changes|dict_lookup:relay.pk|time_delta_nice }}
+                {% if relay.get_current_state %}
+                    {{ relay.get_current_state.timestamp|time_delta_nice }}
                 {% else %}
                     <span class="has-text-grey-light">No history</span>
                 {% endif %}

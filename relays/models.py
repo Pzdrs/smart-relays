@@ -1,5 +1,6 @@
 from queue import Queue
 
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models
 from django.db.models import Model, QuerySet, Q
 from django.urls import reverse
@@ -25,13 +26,20 @@ class BaseModel(models.Model):
 
 class RelayQuerySet(QuerySet):
     def for_user(self, user: User) -> 'RelayQuerySet':
-        return self.all()
+        """
+        Returns a queryset of relays, which either belong to the user or the user has a permission to access them
+        """
+        permitted_relay_ids = UserRelayPermission.objects.filter(user=user).values_list('relay_id')
+        return self.filter(
+            Q(user=user) | Q(id__in=permitted_relay_ids)
+        )
 
 
 class Relay(BaseModel):
     # Queue that stores the requests when an update is issues to a Relay object
     update_requests = Queue()
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, default=default_relay_name)
     description = models.TextField(max_length=65535, blank=True, null=True)
 
@@ -43,15 +51,12 @@ class Relay(BaseModel):
     def get_absolute_url(self):
         return reverse('relays:relay-detail', args=(self.pk,))
 
-    def get_current_state(self):
+    def get_current_state(self) -> 'RelayStateChange':
         """
         Returns the current state of a relay
         if no prior states have been recorded, False is returned by default
         """
         return RelayStateChange.objects.last_known_state(self)
-
-    def get_current_state_bool(self):
-        return self.get_current_state().new_state if self.get_current_state() else False
 
     def get_audit_log(self):
         return RelayUpdateLog.objects.get_relay(self)
@@ -74,9 +79,18 @@ class Relay(BaseModel):
         super().save(force_insert, force_update, using, update_fields)
 
     def toggle(self):
-        current_state = self.get_current_state_bool()
+        current_state = self.get_current_state().new_state if self.get_current_state() else False
         RelayStateChange(new_state=not current_state, relay=self).save()
         return not current_state
+
+    def get_permission_level(self, user: User) -> str | None:
+        """
+        Returns the permission level of a user for a relay
+        """
+        try:
+            return UserRelayPermission.objects.get(user=user, relay=self).permission_level
+        except ObjectDoesNotExist:
+            return None
 
     @staticmethod
     def get_last_update_user() -> User | None:
@@ -106,11 +120,11 @@ class RelayAuditRecord(Model):
 
 
 class RelayStateChangeQuerySet(QuerySet):
-    def get_relay(self, relay: Relay):
+    def for_relay(self, relay: Relay) -> 'RelayStateChangeQuerySet':
         return self.filter(relay_id=relay.pk)
 
-    def last_known_state(self, relay: Relay):
-        return self.get_relay(relay).last()
+    def last_known_state(self, relay: Relay) -> 'RelayStateChange':
+        return self.for_relay(relay).last()
 
 
 class RelayStateChange(RelayAuditRecord):
@@ -141,3 +155,7 @@ class UserRelayPermission(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     relay = models.ForeignKey(Relay, on_delete=models.CASCADE)
     permission_level = models.CharField(max_length=10, choices=PermissionLevel.choices)
+
+    def clean(self):
+        if self.user == self.relay.user:
+            raise ValidationError('User cannot have a permission on their own relay')

@@ -1,10 +1,3 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const relays = JSON.parse(document.querySelector('#relays').innerText);
-    for (const [id, state] of Object.entries(relays)) {
-        changeRelayState(id, state);
-    }
-});
-
 function toggleRelay(relayId) {
     const currentState = document.querySelector(`#relaySwitch${relayId}`).checked;
     fetch(`/api/relay/${relayId}/toggle/`, {
