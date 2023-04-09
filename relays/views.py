@@ -3,11 +3,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView
-from django.views.generic.edit import FormMixin
 
 from relays.forms import RelayUpdateForm, RelayCreateForm
 from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog
-from relays.utils.relay import last_known_relay_state, last_know_relay_state_change_timestamp, relay_slots_breakdown
+from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
 from smart_relays.views import SmartRelaysView
 

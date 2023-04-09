@@ -83,12 +83,12 @@ class Relay(BaseModel):
         RelayStateChange(new_state=not current_state, relay=self).save()
         return not current_state
 
-    def get_permission_level(self, user: User) -> str | None:
+    def get_permission(self, user: User) -> str | None:
         """
         Returns the permission level of a user for a relay
         """
         try:
-            return UserRelayPermission.objects.get(user=user, relay=self).permission_level
+            return UserRelayPermission.objects.get(user=user, relay=self)
         except ObjectDoesNotExist:
             return None
 
@@ -159,3 +159,6 @@ class UserRelayPermission(BaseModel):
     def clean(self):
         if self.user == self.relay.user:
             raise ValidationError('User cannot have a permission on their own relay')
+
+    def grantor(self) -> User:
+        return self.relay.user

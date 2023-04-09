@@ -9,6 +9,8 @@ function toggleRelay(relayId) {
 function changeRelayState(relayId, state) {
     const cardHeader = document.querySelector(`#relayCardHeader${relayId}`);
     const relaySwitch = document.querySelector(`#relaySwitch${relayId}`)
+    const history = document.querySelector(`#relayHistory_${relayId}`);
+    history.innerHTML = 'Right now';
     relaySwitch.checked = state;
     if (state) {
         cardHeader.classList.remove('has-background-danger-light');

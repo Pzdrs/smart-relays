@@ -58,5 +58,5 @@ def render_audit_log(log: RelayAuditRecord):
 def render_relay_card(context, relay: Relay):
     return {
         'relay': relay,
-        'permission': relay.get_permission_level(context.request.user)
+        'permission': relay.get_permission(context.request.user)
     }

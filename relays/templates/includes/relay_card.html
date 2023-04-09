@@ -2,12 +2,20 @@
 {% load data %}
 <div class="card">
     <header
+            style="height:65px"
             id="relayCardHeader{{ relay.pk }}"
             class="relay-card-header card-header {% if relay.get_current_state.new_state %}has-background-success-light{% else %}has-background-danger-light{% endif %}"
     >
-        <p class="card-header-title">
-            {{ relay.name }}
-        </p>
+        {% if permission %}
+            <div class="card-header-title is-flex-direction-column is-align-items-start">
+                <p class="m-0">{{ relay.name }}</p>
+                <p class="is-size-7 has-text-weight-normal">shared by <span class="has-text-weight-bold">{{ permission.grantor }}</span></p>
+            </div>
+        {% else %}
+            <p class="card-header-title">
+                {{ relay.name }}
+            </p>
+        {% endif %}
         <button class="card-header-icon" aria-label="more options">
             <input
                     id="relaySwitch{{ relay.pk }}"
@@ -15,6 +23,7 @@
                     class="switch is-rounded {% if relay.get_current_state.new_state %}is-success{% endif %}"
                     onclick="toggleRelay({{ relay.pk }})"
                     {% if relay.get_current_state.new_state %}checked{% endif %}
+                    {% if permission.permission_level == 'readonly' %}disabled{% endif %}
             >
             <label for="relaySwitch{{ relay.pk }}"></label>
         </button>
@@ -33,11 +42,13 @@
             </p>
             <p class="m-0">
                 <b>Last state change:</b>
-                {% if relay.get_current_state %}
-                    {{ relay.get_current_state.timestamp|time_delta_nice }}
-                {% else %}
-                    <span class="has-text-grey-light">No history</span>
-                {% endif %}
+                <span id="relayHistory_{{ relay.pk }}">
+                    {% if relay.get_current_state %}
+                        {{ relay.get_current_state.timestamp|time_delta_nice }}
+                    {% else %}
+                        <span class="has-text-grey-light">No history</span>
+                    {% endif %}
+                </span>
             </p>
         </div>
     </div>
@@ -46,13 +57,15 @@
             <i class="fa-solid fa-circle-info pr-2"></i>
             Detail
         </a>
-        <a href="{% url 'relays:relay-update' relay.pk %}" class="card-footer-item has-text-info">
-            <i class="fa-solid fa-pen-to-square pr-2"></i>
-            Edit
-        </a>
-        <a class="card-footer-item has-text-danger modal-button" data-target="delete-relay-modal-{{ relay.pk }}">
-            <i class="fa-solid fa-trash pr-2"></i>
-            Delete
-        </a>
+        {% if not permission or permission.permission_level == 'all' %}
+            <a href="{% url 'relays:relay-update' relay.pk %}" class="card-footer-item has-text-info">
+                <i class="fa-solid fa-pen-to-square pr-2"></i>
+                Edit
+            </a>
+            <a class="card-footer-item has-text-danger modal-button" data-target="delete-relay-modal-{{ relay.pk }}">
+                <i class="fa-solid fa-trash pr-2"></i>
+                Delete
+            </a>
+        {% endif %}
     </footer>
 </div>
