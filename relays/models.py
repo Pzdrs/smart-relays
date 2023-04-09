@@ -42,10 +42,10 @@ class Relay(BaseModel):
         Returns the current state of a relay
         if no prior states have been recorded, False is returned by default
         """
-        current_state = RelayStateChange.objects.last_known_state(self)
-        if current_state is None:
-            return False
-        return True
+        return RelayStateChange.objects.last_known_state(self)
+
+    def get_current_state_bool(self):
+        return self.get_current_state().new_state if self.get_current_state() else False
 
     def get_audit_log(self):
         return RelayUpdateLog.objects.get_relay(self)
@@ -66,6 +66,11 @@ class Relay(BaseModel):
                     )
                     update_log.save()
         super().save(force_insert, force_update, using, update_fields)
+
+    def toggle(self):
+        current_state = self.get_current_state_bool()
+        RelayStateChange(new_state=not current_state, relay=self).save()
+        return not current_state
 
     @staticmethod
     def get_last_update_user() -> User | None:

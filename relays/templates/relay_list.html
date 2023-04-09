@@ -4,6 +4,7 @@
 {% block extra_js %}
     <script src="{% static 'js/relay_control.js' %}" defer></script>
     {{ relay_states|json_script:"relays" }}
+    <script id="csrf_token" type="application/json">{{ csrf_token }}</script>
 {% endblock %}
 {% block status %}
     <p class="has-text-grey-light">

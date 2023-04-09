@@ -7,7 +7,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function toggleRelay(relayId) {
     const currentState = document.querySelector(`#relaySwitch${relayId}`).checked;
-    changeRelayState(relayId, currentState);
+    fetch(`/api/relay/${relayId}/toggle/`, {
+        method: 'POST',
+        headers: {'X-CSRFToken': document.getElementById('csrf_token').innerText}
+    }).then(() => changeRelayState(relayId, currentState));
 }
 
 function changeRelayState(relayId, state) {
