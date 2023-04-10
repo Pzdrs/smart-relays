@@ -1,9 +1,10 @@
 {% extends 'base_template.html' %}
+{% load render %}
 {% load data %}
 {% load static %}
 {% block extra_js %}
     <script src="{% static 'js/relay_control.js' %}" defer></script>
-    {{ relay_states|json_script:"relays" }}
+    <script id="csrf_token" type="application/json">{{ csrf_token }}</script>
 {% endblock %}
 {% block status %}
     <p class="has-text-grey-light">
@@ -21,7 +22,7 @@
         {% endif %}
         {% for relay in object_list %}
             <div class="column is-full-mobile is-6-tablet is-6-desktop is-4-widescreen is-3-fullhd">
-                {% include 'includes/relay_card.html' %}
+                {% render_relay_card relay %}
             </div>
         {% endfor %}
         <button class="button add_relay_button model-button is-rounded is-info modal-button"

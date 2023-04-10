@@ -1,19 +1,17 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView
-from django.views.generic.edit import FormMixin
 
 from relays.forms import RelayUpdateForm, RelayCreateForm
-from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog
-from relays.utils.relay import last_known_relay_state, last_know_relay_state_change_timestamp, relay_slots_breakdown
+from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog, UserRelayShare
+from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
 from smart_relays.views import SmartRelaysView
 
 
-class RelayListView(LoginRequiredMixin, SmartRelaysView, ListView):
-    queryset = Relay.objects.all()
+class RelayListView(SmartRelaysView, ListView):
     template_name = 'relay_list.html'
     title = 'Relays'
 
@@ -27,16 +25,11 @@ class RelayListView(LoginRequiredMixin, SmartRelaysView, ListView):
 
         context['progress_color'] = get_progress_bar_color(slots_breakdown[1] / slots_breakdown[0])
 
-        context['create_form'] = RelayCreateForm()
-        context['relay_states'] = {
-            relay.pk: last_known_relay_state(relay)
-            for relay in self.get_queryset()
-        }
-        context['last_relay_state_changes'] = {
-            relay.pk: last_know_relay_state_change_timestamp(relay)
-            for relay in self.get_queryset()
-        }
+        context['create_form'] = RelayCreateForm(initial={'user': self.request.user})
         return context
+
+    def get_queryset(self):
+        return Relay.objects.for_user(self.request.user)
 
 
 class RelayDetailView(SmartRelaysView, DetailView):
@@ -45,8 +38,9 @@ class RelayDetailView(SmartRelaysView, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['state_history'] = RelayStateChange.objects.get_relay(self.object)
-        context['audit_log'] = self.object.get_audit_log()
+        context['state_history'] = RelayStateChange.objects.for_relay(self.get_object())
+        context['audit_log'] = self.get_object().get_audit_log()
+        context['relay_shares'] = UserRelayShare.objects.for_relay(self.get_object())
         return context
 
     def get_title(self):
@@ -59,12 +53,19 @@ class RelayUpdateView(SmartRelaysView, UpdateView):
     template_name = 'relay_form.html'
     title = 'Relay update'
 
+    def handle_test_fail(self):
+        messages.error(self.request, 'You do not have permission to access that page.')
+
+    def test_func(self):
+        share: UserRelayShare = self.get_object().get_share(self.request.user)
+        return True if share is None else share.is_full_access()
+
     def get_page_subtitle(self):
         return self.object
 
     def post(self, request, *args, **kwargs):
         # Put this request into a queue so that the save handler can have access to it
-        Relay._update_requests.put(request)
+        Relay.update_requests.put(request)
         return super().post(request, *args, **kwargs)
 
 
@@ -85,14 +86,17 @@ class RelayCreateView(SmartRelaysView, CreateView):
 
     def post(self, request, *args, **kwargs):
         # Put this request into a queue so that the save handler can have access to it
-        Relay._update_requests.put(request)
+        Relay.update_requests.put(request)
         return super().post(request, *args, **kwargs)
 
 
-class RelayDeleteView(DeleteView):
+class RelayDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     http_method_names = ['post']
     model = Relay
     success_url = reverse_lazy('relays:relay-list')
+
+    def test_func(self):
+        pass
 
 
 class AuditLogView(SmartRelaysView, TemplateView):

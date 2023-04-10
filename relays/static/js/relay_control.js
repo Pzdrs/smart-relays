@@ -1,18 +1,16 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const relays = JSON.parse(document.querySelector('#relays').innerText);
-    for (const [id, state] of Object.entries(relays)) {
-        changeRelayState(id, state);
-    }
-});
-
 function toggleRelay(relayId) {
     const currentState = document.querySelector(`#relaySwitch${relayId}`).checked;
-    changeRelayState(relayId, currentState);
+    fetch(`/api/relay/${relayId}/toggle/`, {
+        method: 'POST',
+        headers: {'X-CSRFToken': document.getElementById('csrf_token').innerText}
+    }).then(() => changeRelayState(relayId, currentState));
 }
 
 function changeRelayState(relayId, state) {
     const cardHeader = document.querySelector(`#relayCardHeader${relayId}`);
     const relaySwitch = document.querySelector(`#relaySwitch${relayId}`)
+    const history = document.querySelector(`#relayHistory_${relayId}`);
+    history.innerHTML = 'Right now';
     relaySwitch.checked = state;
     if (state) {
         cardHeader.classList.remove('has-background-danger-light');

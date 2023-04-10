@@ -17,7 +17,7 @@ main {
     padding: 0 1rem;
 }
 
-@media (width <= 600px) {
+@media (width <= 768px) {
     aside {
         padding-top: 3.8rem;
         padding-left: 0;
@@ -45,7 +45,7 @@ main {
 .add_relay_button {
     position: fixed;
     right: 1rem;
-    top: 45rem
+    top: 90vh;
 }
 
 .add_relay_button_text {

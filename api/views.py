@@ -18,3 +18,13 @@ class RelayDetail(APIView):
         return JsonResponse(serializer.data | {
             'current_state': relay.get_current_state()
         })
+
+
+class RelayToggle(APIView):
+    def post(self, request, pk, format=None):
+        relay: Relay = Relay.objects.get(pk=pk)
+        new_state = relay.toggle()
+        return Response({
+            'status': 'ok',
+            'new_state': new_state
+        })
