@@ -11,8 +11,9 @@ for easy integration with other applications, such as **Node-RED** or **Home Ass
 - [ ] MQTT support
 - [ ] Websocket based reactive UI
 ### Must haves
-- [ ] Support for multiple users
-- [ ] Per-relay user permissions
+- [x] Support for multiple users
+- [x] Per-relay user permissions
 - [x] Per-relay audit logs
 - [ ] Scheduled tasks
 - [ ] Built-in HTTP API
+- [ ] Audit log needs a relay field

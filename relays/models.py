@@ -146,6 +146,14 @@ class RelayUpdateLog(RelayAuditRecord):
 # ----------------------------------------------
 # User Permissions
 # ----------------------------------------------
+class UserRelayPermissionQuerySet(models.QuerySet):
+    def for_user(self, user: User) -> 'UserRelayPermissionQuerySet':
+        return self.filter(user=user)
+
+    def for_relay(self, relay: Relay) -> 'UserRelayPermissionQuerySet':
+        return self.filter(relay=relay)
+
+
 class UserRelayPermission(BaseModel):
     class PermissionLevel(models.TextChoices):
         READ_ONLY = 'readonly', 'Read Only'
@@ -155,6 +163,8 @@ class UserRelayPermission(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     relay = models.ForeignKey(Relay, on_delete=models.CASCADE)
     permission_level = models.CharField(max_length=10, choices=PermissionLevel.choices)
+
+    objects = UserRelayPermissionQuerySet.as_manager()
 
     def clean(self):
         if self.user == self.relay.user:

@@ -1,0 +1,40 @@
+{% load render %}
+{% if shares %}
+    <table class="table is-fullwidth is-hoverable">
+        <thead>
+        <tr>
+            <th class="is-hidden-touch">Sharing started on</th>
+            <th>User</th>
+            <th>
+                <span class="is-hidden-mobile">Permission level</span>
+                <span class="is-hidden-tablet">Permissions</span>
+            </th>
+            <th style="text-align: center">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for record in shares %}
+            <tr>
+                <td class="is-hidden-touch">{{ record.created_at }}</td>
+                <td>
+                    <span class="is-hidden-touch">{{ record.user.get_verbose_name }}</span>
+                    <span class="is-hidden-desktop">{{ record.user.username }}</span>
+                </td>
+                <td style="vertical-align: middle">
+                    <progress class="progress is-primary" value="1" max="3" title="{{ record.get_permission_level_display }}"></progress>
+                </td>
+                <td style="text-align: center">
+                    <a href="" class="button is-small is-danger">
+                        <span class="icon">
+                            <i class="fas fa-trash"></i>
+                        </span>
+                        <span>Revoke share</span>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <span class="has-text-grey-light">You are not sharing this relay with anyone</span>
+{% endif %}
