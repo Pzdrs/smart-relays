@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from relays.models import Relay, RelayStateChange, RelayUpdateLog, RelayCreateLog, UserRelayPermission
+from relays.models import Relay, RelayStateChange, RelayUpdateLog, RelayCreateLog, UserRelayShare
 
 
 @admin.register(Relay)
@@ -33,6 +33,6 @@ class RelayStateChangeAdmin(ModelAdmin):
         return 'ON' if obj.new_state else 'OFF'
 
 
-@admin.register(UserRelayPermission)
+@admin.register(UserRelayShare)
 class UserRelayPermissionAdmin(ModelAdmin):
     list_display = ('user', 'relay', 'permission_level')

@@ -29,7 +29,7 @@ class RelayQuerySet(QuerySet):
         """
         Returns a queryset of relays, which either belong to the user or the user has a permission to access them
         """
-        permitted_relay_ids = UserRelayPermission.objects.filter(user=user).values_list('relay_id')
+        permitted_relay_ids = UserRelayShare.objects.filter(user=user).values_list('relay_id')
         return self.filter(
             Q(user=user) | Q(id__in=permitted_relay_ids)
         )
@@ -83,12 +83,12 @@ class Relay(BaseModel):
         RelayStateChange(new_state=not current_state, relay=self).save()
         return not current_state
 
-    def get_permission(self, user: User):
+    def get_share(self, user: User):
         """
-        Returns the permission level of a user for a relay
+        Returns the UserRelayShare object for the given user, if this relay isn't shared with the user, None is returned
         """
         try:
-            return UserRelayPermission.objects.get(user=user, relay=self)
+            return UserRelayShare.objects.get(user=user, relay=self)
         except ObjectDoesNotExist:
             return None
 
@@ -146,15 +146,15 @@ class RelayUpdateLog(RelayAuditRecord):
 # ----------------------------------------------
 # User Permissions
 # ----------------------------------------------
-class UserRelayPermissionQuerySet(models.QuerySet):
-    def for_user(self, user: User) -> 'UserRelayPermissionQuerySet':
+class UserRelayShareQuerySet(models.QuerySet):
+    def for_user(self, user: User) -> 'UserRelayShareQuerySet':
         return self.filter(user=user)
 
-    def for_relay(self, relay: Relay) -> 'UserRelayPermissionQuerySet':
+    def for_relay(self, relay: Relay) -> 'UserRelayShareQuerySet':
         return self.filter(relay=relay)
 
 
-class UserRelayPermission(BaseModel):
+class UserRelayShare(BaseModel):
     class PermissionLevel(models.IntegerChoices):
         READ_ONLY = 0, 'Read Only'
         CONTROL = 1, 'Control'
@@ -164,7 +164,7 @@ class UserRelayPermission(BaseModel):
     relay = models.ForeignKey(Relay, on_delete=models.CASCADE)
     permission_level = models.IntegerField(choices=PermissionLevel.choices)
 
-    objects = UserRelayPermissionQuerySet.as_manager()
+    objects = UserRelayShareQuerySet.as_manager()
 
     def is_read_only(self) -> bool:
         return self.permission_level == self.PermissionLevel.READ_ONLY

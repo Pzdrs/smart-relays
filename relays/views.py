@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView
 
 from relays.forms import RelayUpdateForm, RelayCreateForm
-from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog, UserRelayPermission
+from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog, UserRelayShare
 from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
 from smart_relays.views import SmartRelaysView
@@ -40,7 +40,7 @@ class RelayDetailView(SmartRelaysView, DetailView):
         context = super().get_context_data(**kwargs)
         context['state_history'] = RelayStateChange.objects.for_relay(self.get_object())
         context['audit_log'] = self.get_object().get_audit_log()
-        context['relay_shares'] = UserRelayPermission.objects.for_relay(self.get_object())
+        context['relay_shares'] = UserRelayShare.objects.for_relay(self.get_object())
         return context
 
     def get_title(self):
@@ -57,7 +57,8 @@ class RelayUpdateView(SmartRelaysView, UpdateView):
         messages.error(self.request, 'You do not have permission to access that page.')
 
     def test_func(self):
-        return self.get_object().get_permission(self.request.user).is_all_access()
+        share: UserRelayShare = self.get_object().get_share(self.request.user)
+        return True if share is None else share.is_all_access()
 
     def get_page_subtitle(self):
         return self.object

@@ -6,11 +6,11 @@
             id="relayCardHeader{{ relay.pk }}"
             class="relay-card-header card-header {% if relay.get_current_state.new_state %}has-background-success-light{% else %}has-background-danger-light{% endif %}"
     >
-        {% if permission %}
+        {% if share %}
             <div class="card-header-title is-flex-direction-column is-align-items-start">
                 <p class="m-0">{{ relay.name }}</p>
                 <p class="is-size-7 has-text-weight-normal">shared by <span
-                        class="has-text-weight-bold">{{ permission.grantor }}</span></p>
+                        class="has-text-weight-bold">{{ share.grantor }}</span></p>
             </div>
         {% else %}
             <p class="card-header-title">
@@ -24,7 +24,7 @@
                     class="switch is-rounded {% if relay.get_current_state.new_state %}is-success{% endif %}"
                     onclick="toggleRelay({{ relay.pk }})"
                     {% if relay.get_current_state.new_state %}checked{% endif %}
-                    {% if permission.is_read_only %}disabled{% endif %}
+                    {% if share.is_read_only %}disabled{% endif %}
             >
             <label for="relaySwitch{{ relay.pk }}"></label>
         </button>
@@ -60,7 +60,7 @@
            </span>
             Detail
         </a>
-        {% if not permission or permission.is_all_access %}
+        {% if not share or share.is_all_access %}
             <a href="{% url 'relays:relay-update' relay.pk %}" class="card-footer-item has-text-info">
                 <span class="icon">
                     <i class="fa-solid fa-pen-to-square"></i>

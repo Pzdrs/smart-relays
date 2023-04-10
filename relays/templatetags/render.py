@@ -3,7 +3,7 @@ from django.utils.safestring import mark_safe
 from django.utils.text import Truncator
 
 from accounts.models import User
-from relays.models import RelayAuditRecord, RelayUpdateLog, RelayCreateLog, Relay, UserRelayPermission
+from relays.models import RelayAuditRecord, RelayUpdateLog, RelayCreateLog, Relay, UserRelayShare
 
 register = template.Library()
 
@@ -58,19 +58,19 @@ def render_audit_log(log: RelayAuditRecord):
 def render_relay_card(context, relay: Relay):
     return {
         'relay': relay,
-        'permission': relay.get_permission(context.request.user)
+        'share': relay.get_share(context.request.user)
     }
 
 
 @register.simple_tag()
-def render_permission_level_progress_bar(relay_share: UserRelayPermission):
+def render_permission_level_progress_bar(relay_share: UserRelayShare):
     def get_color():
         return ('is-danger', 'is-warning', 'is-success')[relay_share.permission_level]
     return mark_safe(
         f'''
          <progress
                 class="progress {get_color()}"
-                value="{relay_share.permission_level + 1}" max="{len(UserRelayPermission.PermissionLevel.values)}"
+                value="{relay_share.permission_level + 1}" max="{len(UserRelayShare.PermissionLevel.values)}"
                 title="{relay_share.get_permission_level_display()}"
          ></progress>
         '''
