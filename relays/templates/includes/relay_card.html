@@ -24,7 +24,7 @@
                     class="switch is-rounded {% if relay.get_current_state.new_state %}is-success{% endif %}"
                     onclick="toggleRelay({{ relay.pk }})"
                     {% if relay.get_current_state.new_state %}checked{% endif %}
-                    {% if permission.permission_level == 'readonly' %}disabled{% endif %}
+                    {% if permission.is_read_only %}disabled{% endif %}
             >
             <label for="relaySwitch{{ relay.pk }}"></label>
         </button>
@@ -55,16 +55,22 @@
     </div>
     <footer class="card-footer">
         <a href="{% url 'relays:relay-detail' relay.pk %}" class="card-footer-item">
-            <i class="fa-solid fa-circle-info pr-2"></i>
+           <span class="icon">
+                <i class="fa-solid fa-circle-info"></i>
+           </span>
             Detail
         </a>
-        {% if not permission or permission.permission_level == 'all' %}
+        {% if not permission or permission.is_all_access %}
             <a href="{% url 'relays:relay-update' relay.pk %}" class="card-footer-item has-text-info">
-                <i class="fa-solid fa-pen-to-square pr-2"></i>
+                <span class="icon">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                </span>
                 Edit
             </a>
             <a class="card-footer-item has-text-danger modal-button" data-target="delete-relay-modal-{{ relay.pk }}">
-                <i class="fa-solid fa-trash pr-2"></i>
+                <span class="icon">
+                    <i class="fa-solid fa-trash"></i>
+                </span>
                 Delete
             </a>
         {% endif %}

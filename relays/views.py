@@ -6,7 +6,7 @@ from django.views.generic import ListView, DetailView, DeleteView, UpdateView, T
 
 from relays.forms import RelayUpdateForm, RelayCreateForm
 from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog, UserRelayPermission
-from relays.utils.relay import relay_slots_breakdown, user_all_access_test
+from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
 from smart_relays.views import SmartRelaysView
 
@@ -57,7 +57,7 @@ class RelayUpdateView(SmartRelaysView, UpdateView):
         messages.error(self.request, 'You do not have permission to access that page.')
 
     def test_func(self):
-        return user_all_access_test(self.request.user, self.get_object())
+        return self.get_object().get_permission(self.request.user).is_all_access()
 
     def get_page_subtitle(self):
         return self.object

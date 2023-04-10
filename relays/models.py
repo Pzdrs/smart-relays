@@ -155,16 +155,25 @@ class UserRelayPermissionQuerySet(models.QuerySet):
 
 
 class UserRelayPermission(BaseModel):
-    class PermissionLevel(models.TextChoices):
-        READ_ONLY = 'readonly', 'Read Only'
-        CONTROL = 'control', 'Control'
-        ALL_ACCESS = 'all', 'All Access'
+    class PermissionLevel(models.IntegerChoices):
+        READ_ONLY = 0, 'Read Only'
+        CONTROL = 1, 'Control'
+        FULL_ACCESS = 2, 'Full Access'
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     relay = models.ForeignKey(Relay, on_delete=models.CASCADE)
-    permission_level = models.CharField(max_length=10, choices=PermissionLevel.choices)
+    permission_level = models.IntegerField(choices=PermissionLevel.choices)
 
     objects = UserRelayPermissionQuerySet.as_manager()
+
+    def is_read_only(self) -> bool:
+        return self.permission_level == self.PermissionLevel.READ_ONLY
+
+    def is_control(self) -> bool:
+        return self.permission_level == self.PermissionLevel.CONTROL
+
+    def is_all_access(self) -> bool:
+        return self.permission_level == self.PermissionLevel.ALL_ACCESS
 
     def clean(self):
         if self.user == self.relay.user:
