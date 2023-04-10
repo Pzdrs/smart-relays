@@ -60,7 +60,7 @@
            </span>
             Detail
         </a>
-        {% if not share or share.is_all_access %}
+        {% if not share or share.is_full_access %}
             <a href="{% url 'relays:relay-update' relay.pk %}" class="card-footer-item has-text-info">
                 <span class="icon">
                     <i class="fa-solid fa-pen-to-square"></i>

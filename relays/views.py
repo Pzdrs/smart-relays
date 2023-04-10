@@ -58,7 +58,7 @@ class RelayUpdateView(SmartRelaysView, UpdateView):
 
     def test_func(self):
         share: UserRelayShare = self.get_object().get_share(self.request.user)
-        return True if share is None else share.is_all_access()
+        return True if share is None else share.is_full_access()
 
     def get_page_subtitle(self):
         return self.object

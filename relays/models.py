@@ -172,8 +172,8 @@ class UserRelayShare(BaseModel):
     def is_control(self) -> bool:
         return self.permission_level == self.PermissionLevel.CONTROL
 
-    def is_all_access(self) -> bool:
-        return self.permission_level == self.PermissionLevel.ALL_ACCESS
+    def is_full_access(self) -> bool:
+        return self.permission_level == self.PermissionLevel.FULL_ACCESS
 
     def clean(self):
         if self.user == self.relay.user:
