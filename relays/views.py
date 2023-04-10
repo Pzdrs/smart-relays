@@ -1,12 +1,12 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView
 
 from relays.forms import RelayUpdateForm, RelayCreateForm
-from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog
-from relays.utils.relay import relay_slots_breakdown
+from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog, UserRelayPermission
+from relays.utils.relay import relay_slots_breakdown, user_all_access_test
 from relays.utils.template import get_progress_bar_color
 from smart_relays.views import SmartRelaysView
 
@@ -52,6 +52,12 @@ class RelayUpdateView(SmartRelaysView, UpdateView):
     template_name = 'relay_form.html'
     title = 'Relay update'
 
+    def handle_test_fail(self):
+        messages.error(self.request, 'You do not have permission to access that page.')
+
+    def test_func(self):
+        return user_all_access_test(self.request.user, self.get_object())
+
     def get_page_subtitle(self):
         return self.object
 
@@ -82,10 +88,13 @@ class RelayCreateView(SmartRelaysView, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class RelayDeleteView(LoginRequiredMixin, DeleteView):
+class RelayDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     http_method_names = ['post']
     model = Relay
     success_url = reverse_lazy('relays:relay-list')
+
+    def test_func(self):
+        pass
 
 
 class AuditLogView(SmartRelaysView, TemplateView):

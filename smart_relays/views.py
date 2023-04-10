@@ -1,5 +1,7 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin
-from django.views.generic.base import ContextMixin
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 
 class SmartRelaysView(AccessMixin):
@@ -8,7 +10,20 @@ class SmartRelaysView(AccessMixin):
     page_subtitle: str = None
     login_required: bool = True
 
+    def test_func(self):
+        """
+        Yoinked from the Django built-in UserPassesTestMixin
+        """
+        pass
+
+    def handle_test_fail(self):
+        pass
+
     def dispatch(self, request, *args, **kwargs):
+        test_func = self.test_func()
+        if test_func is not None and not test_func:
+            self.handle_test_fail()
+            return HttpResponseRedirect(reverse('relays:relay-list'))
         if not request.user.is_authenticated and self.login_required:
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)

@@ -83,7 +83,7 @@ class Relay(BaseModel):
         RelayStateChange(new_state=not current_state, relay=self).save()
         return not current_state
 
-    def get_permission(self, user: User) -> str | None:
+    def get_permission(self, user: User):
         """
         Returns the permission level of a user for a relay
         """
@@ -148,9 +148,9 @@ class RelayUpdateLog(RelayAuditRecord):
 # ----------------------------------------------
 class UserRelayPermission(BaseModel):
     class PermissionLevel(models.TextChoices):
-        read_only = 'readonly', 'Read Only'
-        control = 'control', 'Control'
-        all_access = 'all', 'All Access'
+        READ_ONLY = 'readonly', 'Read Only'
+        CONTROL = 'control', 'Control'
+        ALL_ACCESS = 'all', 'All Access'
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     relay = models.ForeignKey(Relay, on_delete=models.CASCADE)
