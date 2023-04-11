@@ -1,6 +1,7 @@
 from django.urls import path
 
-from relays.views import RelayListView, RelayDetailView, RelayUpdateView, RelayDeleteView, AuditLogView, RelayCreateView
+from relays.views import RelayListView, RelayDetailView, RelayUpdateView, RelayDeleteView, AuditLogView, \
+    RelayCreateView, RelayShareView
 from smart_relays.urls import redirect_to_default_page
 
 app_name = 'relays'
@@ -14,6 +15,6 @@ urlpatterns = [
     path('<int:pk>/delete/', RelayDeleteView.as_view(), name='relay-delete'),
 
     # Shares
-    path('<int:pk>/share', redirect_to_default_page, name='share-relay'),
+    path('<int:pk>/share', RelayShareView.as_view(), name='share-relay'),
     path('shares/<int:pk>/revoke', redirect_to_default_page, name='revoke-share'),
 ]

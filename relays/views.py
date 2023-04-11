@@ -1,8 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
-from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView, FormView
 
 from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm
 from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog, UserRelayShare
@@ -42,7 +42,7 @@ class RelayDetailView(SmartRelaysView, DetailView):
         context['audit_log'] = self.get_object().get_audit_log()
         context['relay_shares'] = UserRelayShare.objects.for_relay(self.get_object())
 
-        context['share_form'] = ShareRelayForm()
+        context['share_form'] = ShareRelayForm(self.request.user, initial={'relay': self.get_object()})
         return context
 
     def get_title(self):
@@ -93,7 +93,7 @@ class RelayCreateView(SmartRelaysView, CreateView):
 
 
 class RelayDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    http_method_names = ['post']
+    http_method_names = ('post',)
     model = Relay
     success_url = reverse_lazy('relays:relay-list')
 
@@ -111,3 +111,15 @@ class AuditLogView(SmartRelaysView, TemplateView):
         update_logs = [log for log in RelayUpdateLog.objects.all()]
         context['logs'] = sorted(create_logs + update_logs, key=lambda log: log.timestamp, reverse=True)
         return context
+
+
+class RelayShareView(CreateView):
+    http_method_names = ('post',)
+    form_class = ShareRelayForm
+
+    def get_success_url(self):
+        return reverse('relays:relay-detail', kwargs={'pk': self.kwargs['pk']})
+
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
+        return super().post(request, *args, **kwargs)

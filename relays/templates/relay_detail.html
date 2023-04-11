@@ -79,6 +79,7 @@
         <p class="is-size-4">Sharing</p>
         <form method="post" action="{% url 'relays:share-relay' object.pk %}" class="ml-3">
             {% csrf_token %}
+            {{ share_form.relay }}
             <div class="field has-addons">
                 <div class="control">
                     <div class="select">

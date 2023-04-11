@@ -175,6 +175,14 @@ class UserRelayShare(BaseModel):
     def is_full_access(self) -> bool:
         return self.permission_level == self.PermissionLevel.FULL_ACCESS
 
+    @staticmethod
+    def highest_permission_level() -> int:
+        return UserRelayShare.PermissionLevel.FULL_ACCESS
+
+    @staticmethod
+    def lowest_permission_level() -> int:
+        return UserRelayShare.PermissionLevel.READ_ONLY
+
     def clean(self):
         if self.user == self.relay.user:
             raise ValidationError('User cannot have a permission on their own relay')

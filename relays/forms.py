@@ -53,10 +53,15 @@ class RelayCreateForm(forms.ModelForm):
         return super().clean()
 
 
-class ShareRelayForm(forms.Form):
-    user = forms.ModelChoiceField(
-        queryset=User.objects.all(),
-    )
-    permission_level = forms.ChoiceField(
-        choices=UserRelayShare.PermissionLevel.choices,
-    )
+class ShareRelayForm(forms.ModelForm):
+    class Meta:
+        model = UserRelayShare
+        fields = '__all__'
+        widgets = {
+            'relay': forms.HiddenInput(),
+        }
+
+    def __init__(self, user: User = None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['user'].queryset = User.objects.exclude(pk=user.pk) if user else User.objects.all()
+        self.fields['permission_level'].choices = UserRelayShare.PermissionLevel.choices
