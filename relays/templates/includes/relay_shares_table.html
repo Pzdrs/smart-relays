@@ -23,27 +23,38 @@
                 <td style="vertical-align: middle">
                     {% render_permission_level_progress_bar share %}
                 </td>
-                <td style="text-align: center">
+                <td id="relay-shares-action-items" class="is-flex is-justify-content-center">
                     {% if share.permission_level < share.highest_permission_level %}
-                        <a href="" class="button is-small is-success" title="Increase permission level">
-                        <span class="icon">
-                            <i class="fas fa-arrow-up"></i>
-                        </span>
-                        </a>
+                        <form action="{% url 'relays:bump-share-permissions' share.pk %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="permission_level" value="{{ share.permission_level|add:1 }}">
+                            <button type="submit" class="button is-small is-success" title="Increase permission level">
+                                <span class="icon">
+                                    <i class="fas fa-arrow-up"></i>
+                                </span>
+                            </button>
+                        </form>
                     {% endif %}
                     {% if share.permission_level > share.lowest_permission_level %}
-                        <a href="" class="button is-small is-warning" title="Decrease permission level">
-                        <span class="icon">
-                            <i class="fas fa-arrow-down"></i>
-                        </span>
-                        </a>
+                        <form action="{% url 'relays:bump-share-permissions' share.pk %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="permission_level" value="{{ share.permission_level|add:-1 }}">
+                            <button type="submit" class="button is-small is-warning" title="Decrease permission level">
+                                <span class="icon">
+                                    <i class="fas fa-arrow-down"></i>
+                                </span>
+                            </button>
+                        </form>
                     {% endif %}
-                    <a href="" class="button is-small is-danger">
+                    <form action="{% url 'relays:revoke-share' share.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="button is-small is-danger">
                         <span class="icon">
                             <i class="fas fa-trash"></i>
                         </span>
-                        <span>Revoke share</span>
-                    </a>
+                            <span>Revoke share</span>
+                        </button>
+                    </form>
                 </td>
             </tr>
         {% endfor %}

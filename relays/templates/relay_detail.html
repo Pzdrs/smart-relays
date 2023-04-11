@@ -1,4 +1,8 @@
 {% extends 'base_template.html' %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/relay_details.css' %}">
+{% endblock %}
 {% block body_content %}
     <p class="is-size-4">Overview</p>
     <div class="columns">

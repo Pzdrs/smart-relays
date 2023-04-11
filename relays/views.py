@@ -12,6 +12,10 @@ from relays.utils.user import user_owns_relay_or_has_full_access
 from smart_relays.views import SmartRelaysView
 
 
+# ----------------------------------------
+# Relay Views
+# ----------------------------------------
+
 class RelayListView(SmartRelaysView, ListView):
     template_name = 'relay_list.html'
     title = 'Relays'
@@ -107,6 +111,11 @@ class RelayDeleteView(SmartRelaysView, DeleteView):
         messages.error(self.request, 'You do not have permission to access that page.')
 
 
+# ----------------------------------------
+# Audit Log Views
+# ----------------------------------------
+
+
 class AuditLogView(SmartRelaysView, TemplateView):
     template_name = 'audit_log.html'
     title = 'Audit Log'
@@ -119,9 +128,42 @@ class AuditLogView(SmartRelaysView, TemplateView):
         return context
 
 
-class RelayShareView(SmartRelaysView, CreateView):
+# ----------------------------------------
+# Relay Sharing Views
+# ----------------------------------------
+
+class CreateRelayShareView(SmartRelaysView, CreateView):
     http_method_names = ('post',)
     form_class = ShareRelayForm
 
     def get_success_url(self):
         return reverse('relays:relay-detail', kwargs={'pk': self.kwargs['pk']}) + '#sharing'
+
+
+class RevokeRelayShareView(SmartRelaysView, DeleteView):
+    http_method_names = ('post',)
+    model = UserRelayShare
+
+    def get_success_url(self):
+        return reverse('relays:relay-detail', kwargs={'pk': self.get_object().relay.pk}) + '#sharing'
+
+    def test_func(self):
+        return user_owns_relay_or_has_full_access(self.request.user, self.get_object().relay)
+
+    def handle_test_fail(self):
+        messages.error(self.request, 'You do not have permission to access that page.')
+
+
+class RelayShareUpdateView(SmartRelaysView, UpdateView):
+    http_method_names = ('post',)
+    model = UserRelayShare
+    fields = ('permission_level',)
+
+    def get_success_url(self):
+        return reverse('relays:relay-detail', kwargs={'pk': self.get_object().relay.pk}) + '#sharing'
+
+    def test_func(self):
+        return user_owns_relay_or_has_full_access(self.request.user, self.get_object().relay)
+
+    def handle_test_fail(self):
+        messages.error(self.request, 'You do not have permission to access that page.')
