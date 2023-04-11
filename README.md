@@ -18,4 +18,4 @@ for easy integration with other applications, such as **Node-RED** or **Home Ass
 - [x] Three level permissions for shared relays
 - [ ] Scheduled tasks
 - [ ] Built-in HTTP API
-- [ ] Audit log needs a relay field
+- [ ] Audit log pagination - both global and in relay detail
