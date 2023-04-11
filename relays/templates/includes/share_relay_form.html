@@ -1,0 +1,24 @@
+<form method="post" action="{% url 'relays:share-relay' object.pk %}">
+    {% csrf_token %}
+    {{ form.relay }}
+    <div class="field has-addons">
+        <div class="control">
+            <div class="select">
+                {{ form.user }}
+            </div>
+        </div>
+        <div class="control">
+            <div class="select">
+                {{ form.permission_level }}
+            </div>
+        </div>
+        <div class="control">
+            <button type="submit" class="button is-success">
+                    <span class="icon mr-1">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+                <span>Grant share</span>
+            </button>
+        </div>
+    </div>
+</form>

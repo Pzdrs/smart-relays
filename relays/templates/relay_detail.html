@@ -81,30 +81,12 @@
     </script>
     <div id="sharing" class="is-flex is-align-items-center mt-5 mb-2">
         <p class="is-size-4">Sharing</p>
-        <form method="post" action="{% url 'relays:share-relay' object.pk %}" class="ml-3">
-            {% csrf_token %}
-            {{ share_form.relay }}
-            <div class="field has-addons">
-                <div class="control">
-                    <div class="select">
-                        {{ share_form.user }}
-                    </div>
-                </div>
-                <div class="control">
-                    <div class="select">
-                        {{ share_form.permission_level }}
-                    </div>
-                </div>
-                <div class="control">
-                    <button type="submit" class="button is-success">
-                    <span class="icon mr-1">
-                        <i class="fa-solid fa-check"></i>
-                    </span>
-                        <span>Grant share</span>
-                    </button>
-                </div>
-            </div>
-        </form>
+        <div class="is-hidden-mobile ml-3">
+            {% include 'includes/share_relay_form.html' with form=share_form %}
+        </div>
+    </div>
+    <div class="is-hidden-tablet mb-2">
+        {% include 'includes/share_relay_form.html' with form=share_form %}
     </div>
     {% include 'includes/relay_shares_table.html' with shares=relay_shares %}
     <p class="is-size-4 mt-5">Audit log</p>

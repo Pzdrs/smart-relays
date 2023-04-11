@@ -178,7 +178,7 @@ class UserRelayShare(BaseModel):
     objects = UserRelayShareQuerySet.as_manager()
 
     def get_absolute_url(self):
-        return reverse('relays:relay-share-detail', args=(self.relay_id,)) + '#sharing'
+        return reverse('relays:relay-detail', args=(self.relay_id,)) + '#sharing'
 
     def is_read_only(self) -> bool:
         return self.permission_level == self.PermissionLevel.READ_ONLY

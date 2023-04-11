@@ -1,8 +1,7 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView, FormView
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView
 
 from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm
 from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog, UserRelayShare
@@ -41,6 +40,9 @@ class RelayDetailView(SmartRelaysView, DetailView):
     model = Relay
     template_name = 'relay_detail.html'
 
+    def test_func(self):
+        return user_owns_relay_or_has_full_access(self.request.user, self.get_object())
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['state_history'] = RelayStateChange.objects.for_relay(self.get_object())
@@ -62,9 +64,6 @@ class RelayUpdateView(SmartRelaysView, UpdateView):
     form_class = RelayUpdateForm
     template_name = 'relay_form.html'
     title = 'Relay update'
-
-    def handle_test_fail(self):
-        messages.error(self.request, 'You do not have permission to access that page.')
 
     def test_func(self):
         return user_owns_relay_or_has_full_access(self.request.user, self.get_object())
@@ -107,9 +106,6 @@ class RelayDeleteView(SmartRelaysView, DeleteView):
     def test_func(self):
         return user_owns_relay_or_has_full_access(self.request.user, self.get_object())
 
-    def handle_test_fail(self):
-        messages.error(self.request, 'You do not have permission to access that page.')
-
 
 # ----------------------------------------
 # Audit Log Views
@@ -136,9 +132,6 @@ class CreateRelayShareView(SmartRelaysView, CreateView):
     http_method_names = ('post',)
     form_class = ShareRelayForm
 
-    def get_success_url(self):
-        return reverse('relays:relay-detail', kwargs={'pk': self.kwargs['pk']}) + '#sharing'
-
 
 class RevokeRelayShareView(SmartRelaysView, DeleteView):
     http_method_names = ('post',)
@@ -150,20 +143,11 @@ class RevokeRelayShareView(SmartRelaysView, DeleteView):
     def test_func(self):
         return user_owns_relay_or_has_full_access(self.request.user, self.get_object().relay)
 
-    def handle_test_fail(self):
-        messages.error(self.request, 'You do not have permission to access that page.')
-
 
 class RelayShareUpdateView(SmartRelaysView, UpdateView):
     http_method_names = ('post',)
     model = UserRelayShare
     fields = ('permission_level',)
 
-    def get_success_url(self):
-        return reverse('relays:relay-detail', kwargs={'pk': self.get_object().relay.pk}) + '#sharing'
-
     def test_func(self):
         return user_owns_relay_or_has_full_access(self.request.user, self.get_object().relay)
-
-    def handle_test_fail(self):
-        messages.error(self.request, 'You do not have permission to access that page.')
