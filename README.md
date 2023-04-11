@@ -10,10 +10,12 @@ for easy integration with other applications, such as **Node-RED** or **Home Ass
 ### Nice to haves
 - [ ] MQTT support
 - [ ] Websocket based reactive UI
+- [ ] Audit log coverage for relay sharing
 ### Must haves
 - [x] Support for multiple users
 - [x] Per-relay user permissions
 - [x] Per-relay audit logs
+- [x] Three level permissions for shared relays
 - [ ] Scheduled tasks
 - [ ] Built-in HTTP API
 - [ ] Audit log needs a relay field

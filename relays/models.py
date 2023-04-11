@@ -6,6 +6,7 @@ from django.db.models import Model, QuerySet, Q
 from django.urls import reverse
 
 from accounts.models import User
+from relays.utils.text import value_or_default, truncate_string, translate_bool
 
 
 def default_relay_name() -> str:
@@ -59,7 +60,7 @@ class Relay(BaseModel):
         return RelayStateChange.objects.last_known_state(self)
 
     def get_audit_log(self):
-        return RelayUpdateLog.objects.get_relay(self)
+        return RelayUpdateRecord.objects.get_relay(self)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self._state.adding:
@@ -69,7 +70,7 @@ class Relay(BaseModel):
                 original_value = getattr(original, field.name)
                 new_value = getattr(self, field.name)
                 if original_value != new_value:
-                    update_log = RelayUpdateLog(
+                    update_log = RelayUpdateRecord(
                         relay=self, user=request.user,
                         field=field.name,
                         old_value=original_value,
@@ -117,14 +118,24 @@ class RelayAuditRecordQuerySet(QuerySet):
 
 
 class RelayAuditRecord(Model):
+    class Meta:
+        abstract = True
+
     relay = models.ForeignKey(Relay, on_delete=models.CASCADE)
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     objects = RelayAuditRecordQuerySet.as_manager()
 
-    class Meta:
-        abstract = True
+    def __str__(self):
+        return f'{self.relay.name} - {self.timestamp} ({self.user})'
+
+    def get_display(self):
+        raise NotImplementedError(
+            "{} is missing the implementation of the get_display() method.".format(
+                self.__class__.__name__
+            )
+        )
 
 
 class RelayStateChangeQuerySet(QuerySet):
@@ -140,15 +151,30 @@ class RelayStateChange(RelayAuditRecord):
 
     objects = RelayStateChangeQuerySet.as_manager()
 
+    def get_display(self):
+        return f'Relay state changed to <b>{translate_bool(self.new_state, "ON", "OFF")}</b>'
 
-class RelayCreateLog(RelayAuditRecord):
-    pass
+
+class RelayCreateRecord(RelayAuditRecord):
+    def get_display(self):
+        return f'Created new relay - <i>{self.relay}</i>'
 
 
-class RelayUpdateLog(RelayAuditRecord):
+class RelayUpdateRecord(RelayAuditRecord):
     field = models.CharField(max_length=50)
     old_value = models.CharField(max_length=65535)
     new_value = models.CharField(max_length=65535)
+
+    def get_display(self):
+        return f'The <b>{self.field}</b> field changed - {self._change_in_value(self.old_value, self.new_value)}'
+
+    @staticmethod
+    def _change_in_value(old, new):
+        return f'''
+            <i>{value_or_default(truncate_string(old, 25), "Blank")}</i>
+            <i class="fa-solid fa-arrow-right px-1"></i>
+            <i>{truncate_string(new, 25)}</i>
+        '''
 
 
 # ----------------------------------------------

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from relays.models import Relay, RelayStateChange, RelayUpdateLog, RelayCreateLog, UserRelayShare
+from relays.models import Relay, RelayStateChange, RelayUpdateRecord, RelayCreateRecord, UserRelayShare
 
 
 @admin.register(Relay)
@@ -14,13 +14,13 @@ class RelayAdmin(ModelAdmin):
         super().save_model(request, obj, form, change)
 
 
-@admin.register(RelayUpdateLog)
-class RelayUpdateLogAdmin(ModelAdmin):
+@admin.register(RelayUpdateRecord)
+class RelayUpdateRecordAdmin(ModelAdmin):
     list_display = ('relay', 'user', 'timestamp', 'field', 'old_value', 'new_value')
 
 
-@admin.register(RelayCreateLog)
-class RelayCreateLogAdmin(ModelAdmin):
+@admin.register(RelayCreateRecord)
+class RelayCreateRecordAdmin(ModelAdmin):
     list_display = ('relay', 'user', 'timestamp')
 
 

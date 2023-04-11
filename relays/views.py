@@ -4,7 +4,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView
 
 from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm
-from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog, UserRelayShare
+from relays.models import Relay, RelayStateChange, RelayCreateRecord, RelayUpdateRecord, UserRelayShare
 from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
 from relays.utils.user import user_owns_relay_or_has_full_access
@@ -118,9 +118,14 @@ class AuditLogView(SmartRelaysView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        create_logs = [log for log in RelayCreateLog.objects.all()]
-        update_logs = [log for log in RelayUpdateLog.objects.all()]
-        context['logs'] = sorted(create_logs + update_logs, key=lambda log: log.timestamp, reverse=True)
+        create_records = [record for record in RelayCreateRecord.objects.all()]
+        update_records = [record for record in RelayUpdateRecord.objects.all()]
+        state_change_records = [record for record in RelayStateChange.objects.all()]
+        context['logs'] = sorted(
+            create_records + update_records + state_change_records,
+            key=lambda log: log.timestamp,
+            reverse=True
+        )
         return context
 
 
