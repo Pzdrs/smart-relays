@@ -8,6 +8,7 @@ from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm
 from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog, UserRelayShare
 from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
+from relays.utils.user import user_owns_relay_or_has_full_access
 from smart_relays.views import SmartRelaysView
 
 
@@ -42,7 +43,10 @@ class RelayDetailView(SmartRelaysView, DetailView):
         context['audit_log'] = self.get_object().get_audit_log()
         context['relay_shares'] = UserRelayShare.objects.for_relay(self.get_object())
 
-        context['share_form'] = ShareRelayForm(self.request.user, initial={'relay': self.get_object()})
+        context['share_form'] = ShareRelayForm(
+            self.get_object().get_possible_recipients(),
+            initial={'relay': self.get_object()}
+        )
         return context
 
     def get_title(self):
@@ -59,8 +63,7 @@ class RelayUpdateView(SmartRelaysView, UpdateView):
         messages.error(self.request, 'You do not have permission to access that page.')
 
     def test_func(self):
-        share: UserRelayShare = self.get_object().get_share(self.request.user)
-        return True if share is None else share.is_full_access()
+        return user_owns_relay_or_has_full_access(self.request.user, self.get_object())
 
     def get_page_subtitle(self):
         return self.object
@@ -92,13 +95,16 @@ class RelayCreateView(SmartRelaysView, CreateView):
         return super().post(request, *args, **kwargs)
 
 
-class RelayDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class RelayDeleteView(SmartRelaysView, DeleteView):
     http_method_names = ('post',)
     model = Relay
     success_url = reverse_lazy('relays:relay-list')
 
     def test_func(self):
-        pass
+        return user_owns_relay_or_has_full_access(self.request.user, self.get_object())
+
+    def handle_test_fail(self):
+        messages.error(self.request, 'You do not have permission to access that page.')
 
 
 class AuditLogView(SmartRelaysView, TemplateView):
@@ -113,13 +119,9 @@ class AuditLogView(SmartRelaysView, TemplateView):
         return context
 
 
-class RelayShareView(CreateView):
+class RelayShareView(SmartRelaysView, CreateView):
     http_method_names = ('post',)
     form_class = ShareRelayForm
 
     def get_success_url(self):
-        return reverse('relays:relay-detail', kwargs={'pk': self.kwargs['pk']})
-
-    def post(self, request, *args, **kwargs):
-        print(request.POST)
-        return super().post(request, *args, **kwargs)
+        return reverse('relays:relay-detail', kwargs={'pk': self.kwargs['pk']}) + '#sharing'

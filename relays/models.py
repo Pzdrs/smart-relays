@@ -83,6 +83,14 @@ class Relay(BaseModel):
         RelayStateChange(new_state=not current_state, relay=self).save()
         return not current_state
 
+    def get_possible_recipients(self) -> QuerySet:
+        """
+        Returns a queryset of users, which this relay isn't shared with, owner of the relay is excluded as well
+        """
+        return User.objects \
+            .exclude(pk=self.user.pk) \
+            .exclude(pk__in=UserRelayShare.objects.filter(relay=self).values_list('user_id'))
+
     def get_share(self, user: User):
         """
         Returns the UserRelayShare object for the given user, if this relay isn't shared with the user, None is returned
@@ -159,6 +167,9 @@ class UserRelayShare(BaseModel):
         READ_ONLY = 0, 'Read Only'
         CONTROL = 1, 'Control'
         FULL_ACCESS = 2, 'Full Access'
+
+    class Meta:
+        unique_together = ('user', 'relay')
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     relay = models.ForeignKey(Relay, on_delete=models.CASCADE)

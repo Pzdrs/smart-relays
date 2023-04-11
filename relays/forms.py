@@ -61,7 +61,7 @@ class ShareRelayForm(forms.ModelForm):
             'relay': forms.HiddenInput(),
         }
 
-    def __init__(self, user: User = None, *args, **kwargs):
+    def __init__(self, possible_recipients: tuple[User] = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['user'].queryset = User.objects.exclude(pk=user.pk) if user else User.objects.all()
+        self.fields['user'].queryset = possible_recipients if possible_recipients is not None else User.objects.all()
         self.fields['permission_level'].choices = UserRelayShare.PermissionLevel.choices

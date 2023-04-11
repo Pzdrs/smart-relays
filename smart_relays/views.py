@@ -1,7 +1,7 @@
-from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+
+from smart_relays.utils.config import get_project_config
 
 
 class SmartRelaysView(AccessMixin):
@@ -22,8 +22,13 @@ class SmartRelaysView(AccessMixin):
     def dispatch(self, request, *args, **kwargs):
         test_func = self.test_func()
         if test_func is not None and not test_func:
-            self.handle_test_fail()
-            return HttpResponseRedirect(reverse('relays:relay-list'))
+            redirect_url = self.handle_test_fail()
+            if redirect_url:
+                return HttpResponseRedirect(redirect_url)
+            try:
+                return HttpResponseRedirect(request.META['HTTP_REFERER'])
+            except KeyError:
+                return HttpResponseRedirect(get_project_config().default_page)
         if not request.user.is_authenticated and self.login_required:
             return self.handle_no_permission()
         return super().dispatch(request, *args, **kwargs)
