@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView
 
-from relays.forms import RelayUpdateForm, RelayCreateForm
+from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm
 from relays.models import Relay, RelayStateChange, RelayCreateLog, RelayUpdateLog, UserRelayShare
 from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
@@ -41,6 +41,8 @@ class RelayDetailView(SmartRelaysView, DetailView):
         context['state_history'] = RelayStateChange.objects.for_relay(self.get_object())
         context['audit_log'] = self.get_object().get_audit_log()
         context['relay_shares'] = UserRelayShare.objects.for_relay(self.get_object())
+
+        context['share_form'] = ShareRelayForm()
         return context
 
     def get_title(self):

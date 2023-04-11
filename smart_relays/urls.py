@@ -4,8 +4,13 @@ from django.urls import path, include
 
 from smart_relays.utils.config import get_project_config
 
+
+def redirect_to_default_page(request):
+    return redirect(get_project_config().default_page, permanent=True)
+
+
 urlpatterns = [
-    path('', lambda request: redirect(get_project_config().default_page, permanent=True)),
+    path('', redirect_to_default_page),
     path('api/', include('api.urls')),
     path('accounts/', include('accounts.urls')),
     path('relays/', include('relays.urls')),

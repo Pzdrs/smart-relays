@@ -1,6 +1,7 @@
 from django import forms
 
-from relays.models import Relay
+from accounts.models import User
+from relays.models import Relay, UserRelayShare
 from smart_relays.utils.config import get_project_config
 
 
@@ -50,3 +51,12 @@ class RelayCreateForm(forms.ModelForm):
         if Relay.objects.count() >= get_project_config().max_relays:
             raise forms.ValidationError('There are no relay slots left.')
         return super().clean()
+
+
+class ShareRelayForm(forms.Form):
+    user = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+    )
+    permission_level = forms.ChoiceField(
+        choices=UserRelayShare.PermissionLevel.choices,
+    )
