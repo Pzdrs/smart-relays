@@ -1,7 +1,7 @@
 from django.urls import path
 
 from relays.views import RelayListView, RelayDetailView, RelayUpdateView, RelayDeleteView, AuditLogView, \
-    RelayCreateView, CreateRelayShareView, RevokeRelayShareView, RelayShareUpdateView
+    RelayCreateView, CreateRelayShareView, RevokeRelayShareView, RelayShareUpdateView, RelayChangeStateView
 
 app_name = 'relays'
 
@@ -11,6 +11,8 @@ urlpatterns = [
     path('<int:pk>/', RelayDetailView.as_view(), name='relay-detail'),
     path('<int:pk>/update/', RelayUpdateView.as_view(), name='relay-update'),
     path('<int:pk>/delete/', RelayDeleteView.as_view(), name='relay-delete'),
+    path('<int:pk>/toggle/', RelayChangeStateView.as_view(), name='relay-toggle'),
+
     # Audit Log
     path('auditlog/', AuditLogView.as_view(), name='audit-log'),
 

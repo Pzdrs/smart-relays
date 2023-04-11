@@ -139,6 +139,12 @@ class RelayAuditRecord(Model):
 
 
 class RelayStateChangeQuerySet(QuerySet):
+    def create(self, relay: Relay, user: User, new_state: bool) -> 'RelayStateChange':
+        return super().create(relay=relay, user=user, new_state=new_state)
+
+    def toggle(self, relay: Relay, user: User) -> 'RelayStateChange':
+        return self.create(relay=relay, user=user, new_state=not self.last_known_state(relay).new_state)
+
     def for_relay(self, relay: Relay) -> 'RelayStateChangeQuerySet':
         return self.filter(relay_id=relay.pk)
 
@@ -150,6 +156,9 @@ class RelayStateChange(RelayAuditRecord):
     new_state = models.BooleanField()
 
     objects = RelayStateChangeQuerySet.as_manager()
+
+    def __str__(self):
+        return super().__str__() + f' - {self.new_state}'
 
     def get_display(self):
         return f'Relay state changed to <b>{translate_bool(self.new_state, "ON", "OFF")}</b>'

@@ -1,13 +1,15 @@
 from django.contrib import messages
+from django.http import HttpResponseRedirect, HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
+from django.views import View
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, TemplateView, CreateView
 
 from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm
 from relays.models import Relay, RelayStateChange, RelayCreateRecord, RelayUpdateRecord, UserRelayShare
 from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
-from relays.utils.user import user_owns_relay_or_has_full_access
+from relays.utils.user_access_tests import owner_or_full_access, owner_or_at_least_control
 from smart_relays.views import SmartRelaysView
 
 
@@ -41,7 +43,7 @@ class RelayDetailView(SmartRelaysView, DetailView):
     template_name = 'relay_detail.html'
 
     def test_func(self):
-        return user_owns_relay_or_has_full_access(self.request.user, self.get_object())
+        return owner_or_full_access(self.request.user, self.get_object())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -66,7 +68,7 @@ class RelayUpdateView(SmartRelaysView, UpdateView):
     title = 'Relay update'
 
     def test_func(self):
-        return user_owns_relay_or_has_full_access(self.request.user, self.get_object())
+        return owner_or_full_access(self.request.user, self.get_object())
 
     def get_page_subtitle(self):
         return self.object
@@ -104,7 +106,22 @@ class RelayDeleteView(SmartRelaysView, DeleteView):
     success_url = reverse_lazy('relays:relay-list')
 
     def test_func(self):
-        return user_owns_relay_or_has_full_access(self.request.user, self.get_object())
+        return owner_or_full_access(self.request.user, self.get_object())
+
+
+class RelayChangeStateView(SmartRelaysView, View):
+    relay: Relay = None
+
+    def handle_test_fail(self, request) -> HttpResponse:
+        return HttpResponseForbidden()
+
+    def test_func(self, request: HttpRequest):
+        self.relay = Relay.objects.get(pk=request.resolver_match.kwargs['pk'])
+        return owner_or_at_least_control(request.user, self.relay)
+
+    def post(self, request, *args, **kwargs):
+        RelayStateChange.objects.toggle(self.relay, request.user)
+        return HttpResponse()
 
 
 # ----------------------------------------
@@ -146,7 +163,7 @@ class RevokeRelayShareView(SmartRelaysView, DeleteView):
         return reverse('relays:relay-detail', kwargs={'pk': self.get_object().relay.pk}) + '#sharing'
 
     def test_func(self):
-        return user_owns_relay_or_has_full_access(self.request.user, self.get_object().relay)
+        return owner_or_full_access(self.request.user, self.get_object().relay)
 
 
 class RelayShareUpdateView(SmartRelaysView, UpdateView):
@@ -155,4 +172,4 @@ class RelayShareUpdateView(SmartRelaysView, UpdateView):
     fields = ('permission_level',)
 
     def test_func(self):
-        return user_owns_relay_or_has_full_access(self.request.user, self.get_object().relay)
+        return owner_or_full_access(self.request.user, self.get_object().relay)
