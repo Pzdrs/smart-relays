@@ -48,10 +48,15 @@
                     {% endif %}
                     <form action="{% url 'relays:revoke-share' share.pk %}" method="post">
                         {% csrf_token %}
-                        <button type="submit" class="button is-small is-danger">
-                        <span class="icon">
-                            <i class="fas fa-trash"></i>
-                        </span>
+                        <button type="submit" class="button is-small is-danger is-hidden-tablet">
+                            <span class="icon">
+                                <i class="fas fa-trash"></i>
+                            </span>
+                        </button>
+                        <button type="submit" class="button is-small is-danger is-hidden-mobile">
+                            <span class="icon">
+                                <i class="fas fa-trash"></i>
+                            </span>
                             <span>Revoke share</span>
                         </button>
                     </form>
