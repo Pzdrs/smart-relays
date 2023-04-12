@@ -47,7 +47,10 @@ class RelayDetailView(SmartRelaysView, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['state_history'] = RelayStateChange.objects.for_relay(self.get_object())
+        context['state_history'] = {
+            str(state_change.timestamp): state_change.new_state for state_change in
+            RelayStateChange.objects.for_relay(self.get_object())
+        }
         context['audit_log'] = self.get_object().get_audit_log()
         context['relay_shares'] = UserRelayShare.objects.for_relay(self.get_object())
 

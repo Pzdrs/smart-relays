@@ -3,6 +3,9 @@
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/relay_details.css' %}">
 {% endblock %}
+{% block extra_js %}
+    {{ state_history|json_script:'state_history' }}
+{% endblock %}
 {% block body_content %}
     <p class="is-size-4">Overview</p>
     <div class="columns">
@@ -32,35 +35,18 @@
                 return '';
             }
         }
-
-        const data = {
-            "2022-02-15T08:45:00": false,
-            "2022-05-22T21:00:15": true,
-            "2021-12-31T23:59:59": false,
-            "2022-07-04T17:00:00": true,
-            "2022-09-12T03:15:30": false,
-            "2022-06-28T13:30:45": true,
-            "2022-01-01T00:00:00": false,
-            "2022-04-22T10:45:15": true,
-            "2022-08-08T08:00:00": false,
-            "2022-02-14T23:59:59": true,
-            "2022-10-31T13:30:00": false,
-            "2022-11-01T00:00:00": true,
-            "2022-09-21T17:45:15": false,
-        }
+        const data = JSON.parse(document.getElementById('state_history').textContent);
         new Chart(document.getElementById('myChart'), {
             type: 'line',
             options: {
                 scales: {
                     x: {
+                        type: 'time',
                         grid: {
                             display: false
                         }
                     },
                     y: {
-                        grid: {
-                            display: false
-                        },
                         ticks: {
                             callback: value => getStateLabel(value)
                         }
@@ -71,7 +57,7 @@
                 labels: Object.keys(data),
                 datasets: [
                     {
-                        label: 'State history',
+                        label: 'Relay state',
                         data: Object.values(data),
                         stepped: true
                     }
