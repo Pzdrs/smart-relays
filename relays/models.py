@@ -1,3 +1,4 @@
+from itertools import chain
 from queue import Queue
 
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
@@ -54,13 +55,36 @@ class Relay(BaseModel):
 
     def get_current_state(self) -> 'RelayStateChange':
         """
-        Returns the current state of a relay
+        :return: the current state of a relay
         if no prior states have been recorded, False is returned by default
         """
         return RelayStateChange.objects.last_known_state(self)
 
-    def get_audit_log(self):
-        return RelayUpdateRecord.objects.get_relay(self)
+    def get_audit_log(self, limit: int = -1):
+        """
+        :return: a tuple of all audit logs for this relay
+        """
+        return tuple(chain(
+            self.get_create_audit_log(), self.get_update_audit_log(), self.get_state_audit_log())
+        )[:limit]
+
+    def get_state_audit_log(self):
+        """
+        :return: a queryset of all state changes for this relay
+        """
+        return RelayStateChange.objects.for_relay(self)
+
+    def get_update_audit_log(self):
+        """
+        :return: a queryset of all update records for this relay
+        """
+        return RelayUpdateRecord.objects.for_relay(self)
+
+    def get_create_audit_log(self):
+        """
+        :return: a queryset of all create records for this relay
+        """
+        return RelayCreateRecord.objects.for_relay(self)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         if not self._state.adding:
@@ -113,7 +137,7 @@ class Relay(BaseModel):
 # Audit Log Models
 # ----------------------------------------------
 class RelayAuditRecordQuerySet(QuerySet):
-    def get_relay(self, relay: Relay):
+    def for_relay(self, relay: Relay):
         return self.filter(relay=relay)
 
 

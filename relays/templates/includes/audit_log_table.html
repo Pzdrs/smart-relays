@@ -1,19 +1,37 @@
 {% load render %}
-{% if logs %}
-    <table class="table is-fullwidth is-hoverable">
+{% if records %}
+    <table class="table is-fullwidth is-hoverable mb-1">
         <thead>
         <tr>
-            <th>Date</th>
-            <th>User</th>
-            <th>Action</th>
+            {% block head %}
+                <th>Date</th>
+                <th>Relay</th>
+                <th>User</th>
+                <th>Action</th>
+            {% endblock %}
         </tr>
         </thead>
         <tbody>
-        {% for record in logs %}
-            {% render_audit_log record %}
+        {% for record in records %}
+            {% block record %}
+                {% render_audit_log record True %}
+            {% endblock %}
         {% endfor %}
         </tbody>
     </table>
+    {% if paginator %}
+        {% include 'includes/pagination/pagination.html' with paginator=paginator page_obj=records %}
+    {% endif %}
+    {% if limit %}
+        <section>
+            <p class="has-text-grey-light mb-2">Showing {{ limit }} results</p>
+            <div class="buttons is-justify-content-center">
+                <a href="?audit_log_limit={{ limit|add:base_limit }}#limit-button" class="button" id="limit-button">Show
+                    more</a>
+                <a onclick="clearPaginationUrl('audit_log_limit')" class="button">Reset</a>
+            </div>
+        </section>
+    {% endif %}
 {% else %}
     <span class="has-text-grey-light">No activity has been recorded so far</span>
 {% endif %}

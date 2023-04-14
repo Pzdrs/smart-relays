@@ -11,6 +11,7 @@ from relays.models import Relay, RelayStateChange, RelayCreateRecord, RelayUpdat
 from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
 from relays.utils.user_access_tests import owner_or_full_access, owner_or_at_least_control, owner_or_shared
+from smart_relays.utils.config import get_relays_config
 from smart_relays.views import SmartRelaysView
 
 
@@ -52,13 +53,18 @@ class RelayDetailView(SmartRelaysView, DetailView):
             str(state_change.timestamp): state_change.new_state for state_change in
             RelayStateChange.objects.for_relay(self.get_object())
         }
-        context['audit_log'] = self.get_object().get_audit_log()
-        context['relay_shares'] = UserRelayShare.objects.for_relay(self.get_object())
 
         context['share_form'] = ShareRelayForm(
             self.get_object().get_possible_recipients(),
             initial={'relay': self.get_object()}
         )
+        context['relay_shares'] = UserRelayShare.objects.for_relay(self.get_object())
+
+        default_audit_log_limit = get_relays_config().audit_log_pagination_page_size
+        audit_log_limit = int(self.request.GET.get('audit_log_limit', default_audit_log_limit))
+        context['audit_log_limit'] = audit_log_limit, default_audit_log_limit
+        context['audit_log'] = self.get_object().get_audit_log(audit_log_limit)
+
         return context
 
     def get_title(self):

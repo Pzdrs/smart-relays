@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="{% static 'css/relay_details.css' %}">
 {% endblock %}
 {% block extra_js %}
+    <script src="{% static 'js/pagination.js' %}" defer></script>
     {{ state_history|json_script:'state_history' }}
 {% endblock %}
 {% block body_content %}
@@ -35,6 +36,7 @@
                 return '';
             }
         }
+
         const data = JSON.parse(document.getElementById('state_history').textContent);
         new Chart(document.getElementById('myChart'), {
             type: 'line',
@@ -76,5 +78,5 @@
     </div>
     {% include 'includes/relay_shares_table.html' with shares=relay_shares %}
     <p class="is-size-4 mt-5">Audit log</p>
-    {% include 'includes/audit_log_table.html' with logs=audit_log %}
+    {% include 'includes/audit_log_table__without_relays.html' with records=audit_log limit=audit_log_limit.0 base_limit=audit_log_limit.1 %}
 {% endblock %}

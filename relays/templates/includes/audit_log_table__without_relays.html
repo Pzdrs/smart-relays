@@ -1,0 +1,10 @@
+{% extends 'includes/audit_log_table.html' %}
+{% load render %}
+{% block head %}
+    <th>Date</th>
+    <th>User</th>
+    <th>Action</th>
+{% endblock %}
+{% block record %}
+    {% render_audit_log record %}
+{% endblock %}
