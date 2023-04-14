@@ -18,7 +18,7 @@ for easy integration with other applications, such as **Node-RED** or **Home Ass
 - [x] Three level permissions for shared relays
 - [ ] Scheduled tasks
 - [ ] Built-in HTTP API
-- [ ] Audit log pagination - both global and in relay detail
+- [x] Audit log pagination - both global and in relay detail
 ## Time tracking
 ### Desktop: 36h
 ### Laptop: 12.5h
