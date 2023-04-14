@@ -6,7 +6,7 @@ from relays.models import Relay, RelayStateChange, RelayUpdateRecord, RelayCreat
 
 @admin.register(Relay)
 class RelayAdmin(ModelAdmin):
-    list_display = ('name', 'description')
+    list_display = ('name', 'user', 'description')
 
     def save_model(self, request, obj, form, change):
         # Push the request to the queue, so that we have access to it later
