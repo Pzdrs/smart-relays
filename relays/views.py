@@ -9,7 +9,7 @@ from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm
 from relays.models import Relay, RelayStateChange, RelayCreateRecord, RelayUpdateRecord, UserRelayShare
 from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
-from relays.utils.user_access_tests import owner_or_full_access, owner_or_at_least_control
+from relays.utils.user_access_tests import owner_or_full_access, owner_or_at_least_control, owner_or_shared
 from smart_relays.views import SmartRelaysView
 
 
@@ -43,7 +43,7 @@ class RelayDetailView(SmartRelaysView, DetailView):
     template_name = 'relay_detail.html'
 
     def test_func(self, request: HttpRequest):
-        return owner_or_full_access(self.request.user, self.get_object())
+        return owner_or_shared(self.request.user, self.get_object())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
