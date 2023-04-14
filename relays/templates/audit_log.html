@@ -1,14 +1,17 @@
 {% extends 'base_template.html' %}
 {% load render %}
 {% block body_content %}
-    <div class="columns">
+    <div class="columns is-multiline">
         <div class="column is-12">
-            {% include 'includes/audit_log_table_global.html' with logs=logs %}
+            {% include 'includes/audit_log_table__with_relays.html' with records=page_obj %}
         </div>
         {% comment %}
         RESERVED FOR LIKE A FILTER MENU OR <SMTH></SMTH>
         <div class="column">
 
         </div>{% endcomment %}
+        <div class="column is-12">
+            {% include 'includes/pagination/pagination.html' with paginator=paginator page_obj=page_obj %}
+        </div>
     </div>
 {% endblock %}

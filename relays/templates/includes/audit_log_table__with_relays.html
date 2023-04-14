@@ -1,5 +1,5 @@
 {% load render %}
-{% if logs %}
+{% if records %}
     <table class="table is-fullwidth is-hoverable">
         <thead>
         <tr>
@@ -10,7 +10,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for record in logs %}
+        {% for record in records %}
             {% render_audit_log record True %}
         {% endfor %}
         </tbody>

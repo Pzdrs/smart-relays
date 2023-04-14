@@ -1,4 +1,5 @@
 from django import template
+from django.core.paginator import Paginator
 from django.utils.safestring import mark_safe
 
 from relays.models import RelayAuditRecord, Relay, UserRelayShare
@@ -8,11 +9,11 @@ register = template.Library()
 
 
 @register.simple_tag
-def render_audit_log(log: RelayAuditRecord, global_record: bool = False):
+def render_audit_log(log: RelayAuditRecord, include_relay: bool = False):
     return mark_safe(f'''
         <tr>
             <td>{format_date(log.timestamp)}</td>
-            {f'<td>{log.relay}</td>' if global_record else ''}
+            {f'<td>{log.relay}</td>' if include_relay else ''}
             <td>{log.user if log.user else '-'}</td>
             <td>{log.get_display()}</td>
         </tr>
@@ -41,3 +42,19 @@ def render_permission_level_progress_bar(relay_share: UserRelayShare):
          ></progress>
         '''
     )
+
+
+@register.inclusion_tag('includes/pagination/pagination_range.html')
+def render_pagination_range(
+        paginator: Paginator,
+        page: int,
+        one_each_side: int = 1,
+        on_ends: int = 1,
+        range_ellipsis: any = None
+):
+    page_range = paginator.get_elided_page_range(page, on_each_side=one_each_side, on_ends=on_ends)
+    return {
+        'page_range': [int(page) if str(page).isnumeric() else None for page in page_range],
+        'current_page': page,
+        'ellipsis': range_ellipsis if range_ellipsis else paginator.ELLIPSIS
+    }

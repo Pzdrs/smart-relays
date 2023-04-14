@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, HttpRequest, HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
@@ -132,21 +133,22 @@ class RelayChangeStateView(SmartRelaysView, View):
 # ----------------------------------------
 
 
-class AuditLogView(SmartRelaysView, TemplateView):
+class AuditLogView(SmartRelaysView, ListView):
     template_name = 'audit_log.html'
     title = 'Audit Log'
+    paginate_by = 10
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_queryset(self):
         create_records = [record for record in RelayCreateRecord.objects.all()]
         update_records = [record for record in RelayUpdateRecord.objects.all()]
         state_change_records = [record for record in RelayStateChange.objects.all()]
-        context['logs'] = sorted(
+
+        logs = sorted(
             create_records + update_records + state_change_records,
             key=lambda log: log.timestamp,
             reverse=True
         )
-        return context
+        return logs
 
 
 # ----------------------------------------
