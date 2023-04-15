@@ -1,10 +1,10 @@
 {% extends 'includes/audit_log_table.html' %}
-{% load render %}
+{% load relays_template %}
 {% block head %}
     <th>Date</th>
     <th>User</th>
     <th>Action</th>
 {% endblock %}
-{% block record %}
-    {% render_audit_log record %}
+{% block for_each_row %}
+    {% render_audit_log row %}
 {% endblock %}

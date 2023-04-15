@@ -1,9 +1,8 @@
 {% extends 'base_template.html' %}
-{% load render %}
 {% block body_content %}
     <div class="columns is-multiline">
         <div class="column is-12">
-            {% include 'includes/audit_log_table.html' with records=page_obj paginator=paginator %}
+            {% include 'includes/audit_log_table.html' with rows=page_obj paginator=paginator %}
         </div>
         {% comment %}
         RESERVED FOR LIKE A FILTER MENU OR <SMTH></SMTH>

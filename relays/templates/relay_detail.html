@@ -78,5 +78,5 @@
     </div>
     {% include 'includes/relay_shares_table.html' with shares=relay_shares %}
     <p class="is-size-4 mt-5">Audit log</p>
-    {% include 'includes/audit_log_table__without_relays.html' with records=audit_log limit=audit_log_limit.0 base_limit=audit_log_limit.1 %}
+    {% include 'includes/audit_log_table__without_relays.html' with rows=audit_log limit=audit_log_limit.0 base_limit=audit_log_limit.1 limit_query_parameter='audit_log_limit' limit_button_id='limit-button' %}
 {% endblock %}

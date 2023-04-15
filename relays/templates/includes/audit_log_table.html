@@ -1,37 +1,14 @@
-{% load render %}
-{% if records %}
-    <table class="table is-fullwidth is-hoverable mb-1">
-        <thead>
-        <tr>
-            {% block head %}
-                <th>Date</th>
-                <th>Relay</th>
-                <th>User</th>
-                <th>Action</th>
-            {% endblock %}
-        </tr>
-        </thead>
-        <tbody>
-        {% for record in records %}
-            {% block record %}
-                {% render_audit_log record True %}
-            {% endblock %}
-        {% endfor %}
-        </tbody>
-    </table>
-    {% if paginator %}
-        {% include 'includes/pagination/pagination.html' with paginator=paginator page_obj=records %}
-    {% endif %}
-    {% if limit %}
-        <section>
-            <p class="has-text-grey-light mb-2">Showing {{ limit }} results</p>
-            <div class="buttons is-justify-content-center">
-                <a href="?audit_log_limit={{ limit|add:base_limit }}#limit-button" class="button" id="limit-button">Show
-                    more</a>
-                <a onclick="clearPaginationUrl('audit_log_limit')" class="button">Reset</a>
-            </div>
-        </section>
-    {% endif %}
-{% else %}
-    <span class="has-text-grey-light">No activity has been recorded so far</span>
-{% endif %}
+{% extends 'includes/base_table.html' %}
+{% load relays_template %}
+{% block head %}
+    <th>Date</th>
+    <th>Relay</th>
+    <th>User</th>
+    <th>Action</th>
+{% endblock %}
+{% block for_each_row %}
+    {% render_audit_log row True %}
+{% endblock %}
+{% block empty_message %}
+    No activity has been recorded so far
+{% endblock %}
