@@ -20,5 +20,5 @@ for easy integration with other applications, such as **Node-RED** or **Home Ass
 - [ ] Built-in HTTP API
 - [x] Audit log pagination - both global and in relay detail
 ## Time tracking
-### Desktop: 36h
+### Desktop: 39h
 ### Laptop: 12.5h
