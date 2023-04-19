@@ -13,5 +13,5 @@ def defaults(request: HttpRequest):
 
 def menu(request: HttpRequest):
     return {
-        'menu': get_project_config().menu,
+        'menu': get_project_config().menu.get_items(request),
     }

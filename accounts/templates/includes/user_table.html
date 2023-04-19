@@ -1,15 +1,35 @@
 {% extends 'includes/base_table.html' %}
 {% block head %}
-    <td>Username</td>
-    <td>Email</td>
-    <td>First Name</td>
-    <td>Last Name</td>
+    <th>Username</th>
+    <th>Email</th>
+    <th>First Name</th>
+    <th>Last Name</th>
+    <th style="text-align: center">Actions</th>
 {% endblock %}
 {% block for_each_row %}
-    <tr>
+    <tr {% if not row.is_active %}style="background-color: #fafafa" class="has-text-grey-light"{% endif %}>
         <td>{{ row.username }}</td>
         <td>{{ row.email }}</td>
         <td>{{ row.first_name }}</td>
         <td>{{ row.last_name }}</td>
+        <td>
+            <a href="">
+                <span class="icon">
+                    <i class="fa-solid fa-power-off {% if row.is_active %}has-text-danger{% else %}has-text-success{% endif %}"
+                       title="{% if row.is_active %}Deactivate{% else %}Activate{% endif %} this user's account">
+                    </i>
+                </span>
+            </a>
+            <a href="">
+                <span class="icon">
+                    <i class="fa-solid fa-pencil has-text-info"></i>
+                </span>
+            </a>
+            <a href="">
+                <span class="icon">
+                    <i class="fa-solid fa-trash has-text-danger"></i>
+                </span>
+            </a>
+        </td>
     </tr>
 {% endblock %}
