@@ -1,0 +1,15 @@
+{% extends 'includes/base_table.html' %}
+{% block head %}
+    <td>Username</td>
+    <td>Email</td>
+    <td>First Name</td>
+    <td>Last Name</td>
+{% endblock %}
+{% block for_each_row %}
+    <tr>
+        <td>{{ row.username }}</td>
+        <td>{{ row.email }}</td>
+        <td>{{ row.first_name }}</td>
+        <td>{{ row.last_name }}</td>
+    </tr>
+{% endblock %}

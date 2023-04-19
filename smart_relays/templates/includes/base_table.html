@@ -10,7 +10,9 @@
         </tbody>
     </table>
     {% if paginator %}
-        {% include 'includes/pagination/pagination.html' with paginator=paginator page_obj=page_obj %}
+        {% if paginator.num_pages > 1 %}
+            {% include 'includes/pagination/pagination.html' with paginator=paginator page_obj=page_obj %}
+        {% endif %}
     {% endif %}
     {% if limit %}
         <section>

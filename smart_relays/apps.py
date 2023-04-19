@@ -13,7 +13,7 @@ class SmartRelaysConfig(AppConfig):
         Label('General'),
         Link('Relays', reverse_lazy('relays:relay-list')),
         Label('Advanced'),
-        Link('Users', ''),
+        Link('Users', reverse_lazy('accounts:user-management')),
         Link('Audit Log', reverse_lazy('relays:audit-log')),
         Label('Preferences'),
         Link('Change password', reverse_lazy('accounts:password-change')),

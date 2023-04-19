@@ -1,8 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.urls import reverse
+from django.views.generic import ListView
 
 from accounts.forms import SmartRelaysPasswordChangeForm
+from accounts.models import User
+from smart_relays.utils.config import get_accounts_config
 from smart_relays.views import SmartRelaysView
 
 
@@ -29,3 +32,10 @@ class SmartRelaysPasswordChangeView(SmartRelaysView, PasswordChangeView):
 
     def get_success_url(self):
         return reverse('accounts:password-change')
+
+
+class UserManagementView(SmartRelaysView, ListView):
+    template_name = 'user_management.html'
+    title = 'User management'
+    model = User
+    paginate_by = get_accounts_config().pagination['USERS']
