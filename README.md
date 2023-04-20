@@ -21,4 +21,4 @@ for easy integration with other applications, such as **Node-RED** or **Home Ass
 - [x] Audit log pagination - both global and in relay detail
 ## Time tracking
 ### Desktop: 39h
-### Laptop: 12.5h
+### Laptop: 13.75h
