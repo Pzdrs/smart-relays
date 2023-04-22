@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
-from django.urls import reverse
-from django.views.generic import ListView
+from django.urls import reverse, reverse_lazy
+from django.views.generic import ListView, DeleteView
 
 from accounts.forms import SmartRelaysPasswordChangeForm
 from accounts.models import User
@@ -39,3 +39,12 @@ class UserManagementView(SmartRelaysView, ListView):
     title = 'User management'
     model = User
     paginate_by = get_accounts_config().pagination['USERS']
+
+
+class UserDeleteView(SmartRelaysView, DeleteView):
+    model = User
+    success_url = reverse_lazy('accounts:user-management')
+
+    def post(self, request, *args, **kwargs):
+        messages.success(self.request, 'User deleted successfully.')
+        return super().delete(request, *args, **kwargs)

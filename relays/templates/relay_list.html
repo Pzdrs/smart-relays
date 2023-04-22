@@ -24,11 +24,7 @@
                 {% render_relay_card relay %}
             </div>
         {% endfor %}
-        <button class="button add_relay_button model-button is-rounded is-info modal-button"
-                data-target="create-relay-modal">
-            <i class="fa-solid fa-plus mr-2"></i>
-            <span class="add_relay_button_text">Add relay</span>
-        </button>
+        {% include 'includes/create_modal_button.html' with label='Add relay' data_target='create-relay-modal' %}
     </div>
 {% endblock %}
 {% block modals %}

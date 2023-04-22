@@ -12,7 +12,7 @@
         <td>{{ row.email }}</td>
         <td>{{ row.first_name }}</td>
         <td>{{ row.last_name }}</td>
-        <td>
+        <td class="has-text-centered">
             <a href="">
                 <span class="icon">
                     <i class="fa-solid fa-power-off {% if row.is_active %}has-text-danger{% else %}has-text-success{% endif %}"
@@ -25,7 +25,7 @@
                     <i class="fa-solid fa-pencil has-text-info"></i>
                 </span>
             </a>
-            <a href="">
+            <a class="modal-button" data-target="delete-user-modal-{{ row.pk }}">
                 <span class="icon">
                     <i class="fa-solid fa-trash has-text-danger"></i>
                 </span>

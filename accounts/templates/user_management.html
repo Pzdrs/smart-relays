@@ -1,4 +1,10 @@
 {% extends 'base_template.html' %}
 {% block body_content %}
     {% include 'includes/user_table.html' with rows=object_list %}
+    {% include 'includes/create_modal_button.html' with label='Add user' data_target='create-user-modal' %}
+{% endblock %}
+{% block modals %}
+    {% for user in object_list %}
+        {% include 'modals/delete_user_modal.html' %}
+    {% endfor %}
 {% endblock %}

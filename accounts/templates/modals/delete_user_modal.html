@@ -1,0 +1,19 @@
+{% extends 'base_modal.html' %}
+{% block id %}delete-user-modal-{{ user.pk }}{% endblock %}
+{% block animation %}modal-fx-fadeInScale{% endblock %}
+{% block header %}
+    <p class="card-header-title">
+        Are you absolutely sure?
+    </p>
+{% endblock %}
+{% block content %}
+    <p>You're about to delete <b>{{ user }}</b> and all entities associated with them.</p>
+    <p>If you're sure, go ahead and delete this relay.</p>
+    <form method="post" action="{% url 'accounts:user-delete' user.pk %}">{% csrf_token %}
+        <div class="field">
+            <div class="control">
+                <input type="submit" class="button is-danger is-outlined is-fullwidth" value="Delete"/>
+            </div>
+        </div>
+    </form>
+{% endblock %}
