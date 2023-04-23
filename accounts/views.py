@@ -21,6 +21,10 @@ class SmartRelaysLoginView(SmartRelaysView, LoginView):
     title = 'Sign in'
     login_required = False
 
+    def form_invalid(self, form):
+        push_form_errors_to_messages(self.request, form)
+        return super().form_invalid(form)
+
 
 class SmartRelaysLogoutView(SmartRelaysView, LogoutView):
     template_name = 'logout.html'

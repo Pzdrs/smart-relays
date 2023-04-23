@@ -29,33 +29,35 @@
         {% include 'includes/navigation.html' %}
     {% endblock %}
     <main>
-        <header>
-            <div class="mb-3">
-                <p class="is-size-3">
-                    {% block page_title %}
-                        {% if page_title %}
-                            {{ page_title }}
-                        {% elif title %}
-                            {{ title }}
-                        {% endif %}
-                    {% endblock %}
-                </p>
-                <p class="is-size-6 has-text-grey">
-                    {% block page_subtitle %}
-                        {% if page_subtitle %}
-                            {{ page_subtitle }}
-                        {% endif %}
-                    {% endblock %}
-                </p>
-            </div>
-            <div class="is-flex is-justify-content-space-between">
-                {% block breadcrumbs %}{% endblock %}
-                <div></div>
-                <div>
-                    {% block status %}{% endblock %}
+        {% block header %}
+            <header>
+                <div class="mb-3">
+                    <p class="is-size-3">
+                        {% block page_title %}
+                            {% if page_title %}
+                                {{ page_title }}
+                            {% elif title %}
+                                {{ title }}
+                            {% endif %}
+                        {% endblock %}
+                    </p>
+                    <p class="is-size-6 has-text-grey">
+                        {% block page_subtitle %}
+                            {% if page_subtitle %}
+                                {{ page_subtitle }}
+                            {% endif %}
+                        {% endblock %}
+                    </p>
                 </div>
-            </div>
-        </header>
+                <div class="is-flex is-justify-content-space-between">
+                    {% block breadcrumbs %}{% endblock %}
+                    <div></div>
+                    <div>
+                        {% block status %}{% endblock %}
+                    </div>
+                </div>
+            </header>
+        {% endblock %}
         <hr>
         {% block messages %}
             {% if messages %}

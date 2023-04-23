@@ -1,6 +1,20 @@
 {% extends 'base_template.html' %}
 {% block body %}
     <div class="hero is-fullheight" style="background-color: #efefef">
+        <div class="columns mt-5">
+            <div class="column is-4"></div>
+            <div class="column is-4">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="notification {{ message.tags }}">
+                            <button class="delete" onclick="this.parentElement.remove()"></button>
+                            {{ message|safe }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="column is-4"></div>
+        </div>
         <div class="hero-body is-justify-content-center is-align-items-center">
             <form method="post">{% csrf_token %}
                 <div class="columns is-flex is-flex-direction-column box">
