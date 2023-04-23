@@ -2,12 +2,12 @@ from urllib.parse import urlparse, ParseResult
 
 from django.contrib import messages
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
-from django.urls import reverse, reverse_lazy, resolve
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DeleteView, UpdateView, DetailView
 
-from accounts.forms import SmartRelaysPasswordChangeForm
+from accounts.forms import SmartRelaysPasswordChangeForm, UserUpdateForm
 from accounts.models import User
-from relays.utils.session import delete_session_parameter, set_session_parameter
 from smart_relays.utils.config import get_accounts_config
 from smart_relays.views import SmartRelaysView
 
@@ -56,7 +56,7 @@ class UserDeleteView(SmartRelaysView, DeleteView):
 
 class UserUpdateView(SmartRelaysView, UpdateView):
     model = User
-    fields = ['username', 'email', 'first_name', 'last_name', 'is_active', 'is_staff', 'is_superuser']
+    form_class = UserUpdateForm
     template_name = 'user_update.html'
     title = 'User update'
     http_referrer: ParseResult = None
@@ -71,13 +71,12 @@ class UserUpdateView(SmartRelaysView, UpdateView):
         return super().get_success_url()
 
     def post(self, request, *args, **kwargs):
-        self.http_referrer = urlparse(request.session.get('http_referrer'))
-        delete_session_parameter(request, 'http_referrer')
+        self.http_referrer = urlparse(request.session.pop('http_referrer'))
         messages.success(self.request, 'User updated successfully.')
         return super().post(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        set_session_parameter(request, 'http_referrer', request.META.get('HTTP_REFERER'))
+        request.session['http_referrer'] = request.META.get('HTTP_REFERER')
         return super().get(request, *args, **kwargs)
 
 
@@ -88,3 +87,15 @@ class UserDetailView(SmartRelaysView, DetailView):
 
     def get_page_subtitle(self):
         return self.get_object()
+
+
+def toggle_user_active_status_view(request: HttpRequest, pk: int, *args, **kwargs):
+    current_user: User = request.user
+    if current_user.is_superuser or current_user.pk == pk:
+        user: User = User.objects.get(pk=pk)
+        user.is_active = not user.is_active
+        user.save()
+        messages.success(request, 'User activity status changed successfully.')
+        return HttpResponseRedirect(reverse('accounts:user-management'))
+    else:
+        return HttpResponse(status=403)

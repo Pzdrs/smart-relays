@@ -1,8 +1,13 @@
 {% extends 'base_template.html' %}
+{% load common_template %}
 {% block body_content %}
-    <form method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit">
-    </form>
+    <div class="columns">
+        <div class="column is-full is-6-desktop">
+            <form method="post">
+                {% csrf_token %}
+                {% render_form form %}
+                <input class="button is-link" type="submit" value="Save changes">
+            </form>
+        </div>
+    </div>
 {% endblock %}

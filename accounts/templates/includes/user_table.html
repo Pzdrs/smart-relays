@@ -12,14 +12,19 @@
         <td>{{ row.email }}</td>
         <td>{{ row.first_name }}</td>
         <td>{{ row.last_name }}</td>
-        <td class="has-text-centered">
-            <a href="">
+        <td class="is-flex is-justify-content-center">
+            {% if row.pk != request.user.pk %}
+                <form action="{% url 'accounts:user-active-toggle' row.pk %}" method="post">
+                    {% csrf_token %}
+                    <a onclick="this.parentElement.submit()">
                 <span class="icon">
                     <i class="fa-solid fa-power-off {% if row.is_active %}has-text-danger{% else %}has-text-success{% endif %}"
                        title="{% if row.is_active %}Deactivate{% else %}Activate{% endif %} this user's account">
                     </i>
                 </span>
-            </a>
+                    </a>
+                </form>
+            {% endif %}
             <a href="{% url 'accounts:user-update' user.pk %}">
                 <span class="icon">
                     <i class="fa-solid fa-pencil has-text-info"></i>

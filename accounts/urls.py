@@ -2,7 +2,7 @@ from django.contrib.auth.views import PasswordChangeDoneView
 from django.urls import path
 
 from accounts.views import SmartRelaysLoginView, SmartRelaysLogoutView, SmartRelaysPasswordChangeView, \
-    UserManagementView, UserDeleteView, UserUpdateView, UserDetailView
+    UserManagementView, UserDeleteView, UserUpdateView, UserDetailView, toggle_user_active_status_view
 
 app_name = 'accounts'
 
@@ -32,5 +32,8 @@ urlpatterns = [
     ),
     path(
         "users/<int:pk>/update/", UserUpdateView.as_view(), name='user-update'
+    ),
+    path(
+        "users/<int:pk>/toggle_active/", toggle_user_active_status_view, name='user-active-toggle'
     ),
 ]
