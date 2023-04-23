@@ -1,14 +1,17 @@
 from urllib.parse import urlparse, ParseResult
 
 from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, DeleteView, UpdateView, DetailView
+from django.views.generic import ListView, DeleteView, UpdateView, DetailView, CreateView
 
-from accounts.forms import SmartRelaysPasswordChangeForm, UserUpdateForm
+from accounts.forms import SmartRelaysPasswordChangeForm, UserUpdateForm, UserCreateForm
 from accounts.models import User
+from accounts.utils.access.user_access_tests import superuser, same_user_or_superuser
 from smart_relays.utils.config import get_accounts_config
+from smart_relays.utils.template import push_form_errors_to_messages
 from smart_relays.views import SmartRelaysView
 
 
@@ -44,10 +47,21 @@ class UserManagementView(SmartRelaysView, ListView):
     ordering = ('date_joined',)
     paginate_by = get_accounts_config().pagination['USERS']
 
+    def test_func(self, request: HttpRequest):
+        return superuser(request)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['add_form'] = UserCreateForm()
+        return context
+
 
 class UserDeleteView(SmartRelaysView, DeleteView):
     model = User
     success_url = reverse_lazy('accounts:user-management')
+
+    def test_func(self, request: HttpRequest):
+        return same_user_or_superuser(request, self.get_object())
 
     def post(self, request, *args, **kwargs):
         messages.success(self.request, 'User deleted successfully.')
@@ -60,6 +74,9 @@ class UserUpdateView(SmartRelaysView, UpdateView):
     template_name = 'user_update.html'
     title = 'User update'
     http_referrer: ParseResult = None
+
+    def test_func(self, request: HttpRequest):
+        return same_user_or_superuser(request, self.get_object())
 
     def get_page_subtitle(self):
         return self.get_object()
@@ -85,14 +102,37 @@ class UserDetailView(SmartRelaysView, DetailView):
     template_name = 'user_detail.html'
     title = 'My profile'
 
+    def test_func(self, request: HttpRequest):
+        return same_user_or_superuser(request, self.get_object())
+
     def get_page_subtitle(self):
         return self.get_object()
 
 
+class UserCreateView(SmartRelaysView, CreateView):
+    http_method_names = ('post',)
+    model = User
+    form_class = UserCreateForm
+    success_url = reverse_lazy('accounts:user-management')
+
+    def test_func(self, request: HttpRequest):
+        return superuser(request)
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, 'User created successfully.')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        push_form_errors_to_messages(self.request, form)
+        return HttpResponseRedirect(reverse('accounts:user-management'))
+
+
 def toggle_user_active_status_view(request: HttpRequest, pk: int, *args, **kwargs):
-    current_user: User = request.user
-    if current_user.is_superuser or current_user.pk == pk:
-        user: User = User.objects.get(pk=pk)
+    user: User = User.objects.get(pk=pk)
+    if same_user_or_superuser(request, user):
         user.is_active = not user.is_active
         user.save()
         messages.success(request, 'User activity status changed successfully.')

@@ -2,7 +2,7 @@ from django.contrib.auth.views import PasswordChangeDoneView
 from django.urls import path
 
 from accounts.views import SmartRelaysLoginView, SmartRelaysLogoutView, SmartRelaysPasswordChangeView, \
-    UserManagementView, UserDeleteView, UserUpdateView, UserDetailView, toggle_user_active_status_view
+    UserManagementView, UserDeleteView, UserUpdateView, UserDetailView, toggle_user_active_status_view, UserCreateView
 
 app_name = 'accounts'
 
@@ -23,6 +23,9 @@ urlpatterns = [
     ),
     path(
         "users/", UserManagementView.as_view(), name='user-management'
+    ),
+    path(
+        "users/create/", UserCreateView.as_view(), name='user-create'
     ),
     path(
         "users/<int:pk>/", UserDetailView.as_view(), name='user-detail'

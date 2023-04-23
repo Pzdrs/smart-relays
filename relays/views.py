@@ -5,11 +5,12 @@ from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 
+from accounts.utils.access.user_relay_access_tests import owner_or_shared, owner_or_full_access, \
+    owner_or_at_least_control
 from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm
 from relays.models import Relay, RelayStateChange, RelayCreateRecord, RelayUpdateRecord, UserRelayShare
 from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
-from accounts.utils.user_access_tests import owner_or_full_access, owner_or_at_least_control, owner_or_shared
 from smart_relays.utils.config import get_relays_config
 from smart_relays.views import SmartRelaysView
 

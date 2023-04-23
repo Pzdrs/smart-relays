@@ -1,0 +1,18 @@
+{% extends 'base_modal.html' %}
+{% load common_template %}
+{% block id %}create-user-modal{% endblock %}
+{% block animation %}modal-fx-fadeInScale{% endblock %}
+{% block header %}
+    <p class="card-header-title">
+        Create a new user
+    </p>
+{% endblock %}
+{% block content %}
+    <form method="post" action="{% url 'accounts:user-create' %}">
+        {% csrf_token %}
+        {% render_form form %}
+        <div class="field">
+            <input type="submit" class="button is-link" value="Create"/>
+        </div>
+    </form>
+{% endblock %}

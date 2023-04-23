@@ -7,4 +7,5 @@
     {% for user in object_list %}
         {% include 'modals/delete_user_modal.html' %}
     {% endfor %}
+    {% include 'modals/create_user_modal.html' with form=add_form %}
 {% endblock %}

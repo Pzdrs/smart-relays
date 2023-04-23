@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import password_validation
-from django.contrib.auth.forms import PasswordChangeForm, UserChangeForm, UsernameField
+from django.contrib.auth.forms import PasswordChangeForm, UserChangeForm, UsernameField, UserCreationForm
 from django.utils.translation import gettext_lazy as _
 
 from accounts.models import User
@@ -42,3 +42,17 @@ class UserUpdateForm(forms.ModelForm):
         self.fields['email'].widget = forms.EmailInput(attrs={'class': 'input'})
 
         self.fields['is_staff'].help_text = 'Designates whether the user can log into the Django admin site.'
+
+
+class UserCreateForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ("username",)
+        field_classes = {"username": UsernameField}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['username'].widget = forms.TextInput(attrs={'class': 'input'})
+        self.fields['password1'].widget = forms.PasswordInput(attrs={'class': 'input'})
+        self.fields['password2'].widget = forms.PasswordInput(attrs={'class': 'input'})
