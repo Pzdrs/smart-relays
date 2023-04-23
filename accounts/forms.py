@@ -41,3 +41,4 @@ class UserUpdateForm(forms.ModelForm):
         self.fields['last_name'].widget = forms.TextInput(attrs={'class': 'input'})
         self.fields['email'].widget = forms.EmailInput(attrs={'class': 'input'})
 
+        self.fields['is_staff'].help_text = 'Designates whether the user can log into the Django admin site.'
