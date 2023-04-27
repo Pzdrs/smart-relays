@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from relays.models import Relay, RelayStateChange, RelayUpdateRecord, RelayCreateRecord, UserRelayShare
+from relays.models import Relay, RelayStateChange, RelayUpdateRecord, RelayCreateRecord, UserRelayShare, \
+    RelayShareRecord
 
 
 @admin.register(Relay)
@@ -22,6 +23,11 @@ class RelayUpdateRecordAdmin(ModelAdmin):
 @admin.register(RelayCreateRecord)
 class RelayCreateRecordAdmin(ModelAdmin):
     list_display = ('relay', 'user', 'timestamp')
+
+
+@admin.register(RelayShareRecord)
+class RelayShareRecordAdmin(ModelAdmin):
+    list_display = ('relay', 'user', 'receiver', 'state', 'timestamp')
 
 
 @admin.register(RelayStateChange)

@@ -8,7 +8,8 @@ from django.views.generic import ListView, DetailView, DeleteView, UpdateView, C
 from accounts.utils.access.user_relay_access_tests import owner_or_shared, owner_or_full_access, \
     owner_or_at_least_control
 from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm
-from relays.models import Relay, RelayStateChange, RelayCreateRecord, RelayUpdateRecord, UserRelayShare
+from relays.models import Relay, RelayStateChange, RelayCreateRecord, RelayUpdateRecord, UserRelayShare, \
+    RelayShareRecord
 from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
 from smart_relays.utils.config import get_relays_config
@@ -145,12 +146,13 @@ class AuditLogView(SmartRelaysView, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        create_records = [record for record in RelayCreateRecord.objects.all()]
-        update_records = [record for record in RelayUpdateRecord.objects.all()]
-        state_change_records = [record for record in RelayStateChange.objects.all()]
+        create_records = list(RelayCreateRecord.objects.all())
+        update_records = list(RelayUpdateRecord.objects.all())
+        state_change_records = list(RelayStateChange.objects.all())
+        relay_share_records = list(RelayShareRecord.objects.all())
 
         logs = sorted(
-            create_records + update_records + state_change_records,
+            create_records + update_records + state_change_records + relay_share_records,
             key=lambda log: log.timestamp,
             reverse=True
         )
