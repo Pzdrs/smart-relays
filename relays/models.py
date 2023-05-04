@@ -8,7 +8,6 @@ from django.http import HttpRequest
 from django.urls import reverse
 
 from accounts.models import User
-from relays.tasks import toggle_relay
 from relays.utils.text import value_or_default, truncate_string, translate_bool
 
 
@@ -131,6 +130,7 @@ class Relay(BaseModel):
         super().save(force_insert, force_update, using, update_fields)
 
     def toggle(self, request: HttpRequest):
+        from relays.tasks import toggle_relay
         toggle_relay.delay(self.pk)
         return not RelayStateChange.objects.toggle(self, request.user).new_state
 
