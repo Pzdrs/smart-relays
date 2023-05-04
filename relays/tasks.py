@@ -2,10 +2,9 @@ import time
 
 import RPi.GPIO as GPIO
 
-from relays.utils.gpio import set_channel_state
-from smart_relays.celery import app
-from relays.models import Relay
 from relays.models import Channel
+from relays.models import Relay
+from smart_relays.celery import app
 
 
 @app.task

@@ -1,9 +1,5 @@
 from django.apps import AppConfig
 
-from relays.utils.gpio import init_GPIO
-from relays.tasks import sync_channels
-
-
 class RelaysConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'relays'
@@ -13,5 +9,8 @@ class RelaysConfig(AppConfig):
         from . import signals
 
         # GPIO related initialization
+        from relays.utils.gpio import init_GPIO
+        from relays.tasks import sync_channels
+
         init_GPIO()
         sync_channels.delay()
