@@ -10,11 +10,8 @@ from smart_relays.celery import app
 def test_channel(channel_id: int):
     channel: Channel = Channel.objects.get(pk=channel_id)
     for _ in range(3):
-        set_channel_state(channel, True)
-        time.sleep(0.5)
-
-        set_channel_state(channel, False)
-        time.sleep(0.5)
+        toggle_relay.delay(channel.relay.id)
+        time.sleep(.5)
 
 
 @app.task

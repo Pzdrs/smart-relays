@@ -10,6 +10,6 @@ class RelaysConfig(AppConfig):
         from . import signals
 
         # GPIO related initialization
-        #from relays.utils.gpio import init_GPIO
+        from relays.utils.gpio import init_GPIO
 
-        #init_GPIO()
+        init_GPIO()
