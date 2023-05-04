@@ -14,12 +14,24 @@ def default_relay_name() -> str:
     return f'Relay #{Relay.objects.count() + 1}'
 
 
+def default_channel_name() -> str:
+    return f'Channel #{Channel.objects.count() + 1}'
+
+
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         abstract = True
+
+
+# ----------------------------------------------
+# Channels
+# ----------------------------------------------
+class Channel(Model):
+    name = models.CharField(max_length=100, default=default_channel_name)
+    pin = models.IntegerField()
 
 
 # ----------------------------------------------
@@ -41,6 +53,7 @@ class Relay(BaseModel):
     # Queue that stores the requests when an update is issues to a Relay object
     update_requests = Queue()
 
+    channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, default=default_relay_name)
     description = models.TextField(max_length=65535, blank=True, null=True)

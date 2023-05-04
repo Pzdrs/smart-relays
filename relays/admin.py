@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from relays.models import Relay, RelayStateChange, RelayUpdateRecord, RelayCreateRecord, UserRelayShare
+from relays.models import Relay, RelayStateChange, RelayUpdateRecord, RelayCreateRecord, UserRelayShare, Channel
 
 
 @admin.register(Relay)
@@ -12,6 +12,11 @@ class RelayAdmin(ModelAdmin):
         # Push the request to the queue, so that we have access to it later
         Relay.update_requests.put(request)
         super().save_model(request, obj, form, change)
+
+
+@admin.register(Channel)
+class ChannelAdmin(ModelAdmin):
+    list_display = ('name', 'pin')
 
 
 @admin.register(RelayUpdateRecord)
