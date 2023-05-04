@@ -2,7 +2,7 @@ from django import template
 from django.core.paginator import Paginator
 from django.utils.safestring import mark_safe
 
-from relays.models import RelayAuditRecord, Relay, UserRelayShare
+from relays.models import RelayAuditRecord, Relay, UserRelayShare, Channel
 from relays.utils.dates import format_date
 
 register = template.Library()

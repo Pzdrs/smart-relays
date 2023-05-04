@@ -33,6 +33,17 @@ class Channel(Model):
     name = models.CharField(max_length=100, default=default_channel_name)
     pin = models.IntegerField()
 
+    def __str__(self):
+        return f'{self.name} ({self.pin})'
+
+    @property
+    def is_in_use(self):
+        return Relay.objects.filter(channel=self).exists()
+
+    @property
+    def relay(self):
+        return Relay.objects.filter(channel=self).first()
+
 
 # ----------------------------------------------
 # Relay Models
@@ -53,7 +64,7 @@ class Relay(BaseModel):
     # Queue that stores the requests when an update is issues to a Relay object
     update_requests = Queue()
 
-    channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
+    channel = models.OneToOneField(Channel, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, default=default_relay_name)
     description = models.TextField(max_length=65535, blank=True, null=True)

@@ -13,6 +13,7 @@ class SmartRelaysConfig(AppConfig):
         Label('General'),
         Link('Relays', reverse_lazy('relays:relay-list')),
         Label('Advanced'),
+        Link('Channels', reverse_lazy('relays:channel-list')),
         Link('Users', reverse_lazy('accounts:user-management'), lambda request: request.user.is_superuser),
         Link('Audit Log', reverse_lazy('relays:audit-log')),
         Label('Preferences'),

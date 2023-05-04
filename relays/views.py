@@ -1,18 +1,19 @@
 from django.contrib import messages
-from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
+from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
 
 from accounts.utils.access.user_relay_access_tests import owner_or_shared, owner_or_full_access, \
-    owner_or_at_least_control
+    owner_or_at_least_control, superuser
 from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm
 from relays.models import Relay, RelayStateChange, RelayCreateRecord, RelayUpdateRecord, UserRelayShare, \
-    RelayShareRecord
+    RelayShareRecord, Channel
 from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
 from smart_relays.utils.config import get_relays_config
+from smart_relays.utils.template import push_form_errors_to_messages
 from smart_relays.views import SmartRelaysView
 
 
@@ -133,6 +134,54 @@ class RelayChangeStateView(SmartRelaysView, View):
     def post(self, request, *args, **kwargs):
         RelayStateChange.objects.toggle(self.relay, request.user)
         return HttpResponse()
+
+
+# ----------------------------------------
+# Channel Views
+# ----------------------------------------
+class ChannelListView(SmartRelaysView, ListView):
+    template_name = 'channels.html'
+    title = 'Channels'
+    model = Channel
+
+
+class ChannelUpdateView(SmartRelaysView, UpdateView):
+    model = Channel
+#    form_class = ChannelUpdateForm
+    template_name = 'channel_form.html'
+    title = 'Channel update'
+
+    def test_func(self, request: HttpRequest):
+        return superuser(request.user)
+
+    def get_page_subtitle(self):
+        return self.object
+
+
+class ChannelCreateView(SmartRelaysView, CreateView):
+    http_method_names = ('post',)
+    model = Channel
+#    form_class = ChannelCreateForm
+    success_url = reverse_lazy('relays:channel-list')
+
+    def form_invalid(self, form):
+        push_form_errors_to_messages(self.request, form)
+        return redirect(self.success_url)
+
+
+class ChannelDeleteView(SmartRelaysView, DeleteView):
+    http_method_names = ('post',)
+    model = Channel
+    success_url = reverse_lazy('relays:channel-list')
+
+    def test_func(self, request: HttpRequest):
+        return superuser(self.request.user)
+
+
+class ChannelTestView(SmartRelaysView, View):
+    def get(self, request, *args, **kwargs):
+        messages.info(request, 'Testing channel...')
+        return HttpResponseRedirect(reverse('relays:channel-list'))
 
 
 # ----------------------------------------

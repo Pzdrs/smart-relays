@@ -1,0 +1,42 @@
+{% extends 'includes/base_table.html' %}
+{% load relays_template %}
+{% block head %}
+    <th>Name</th>
+    <th>GPIO Pin</th>
+    <th>In use</th>
+    <th style="text-align: center">Actions</th>
+{% endblock %}
+{% block for_each_row %}
+    <tr>
+        <td>{{ row.name }}</td>
+        <td>{{ row.pin }}</td>
+        <td>
+            {% if row.is_in_use %}
+                <i class="fa-solid fa-check has-text-success"></i>
+                <span class="has-text-grey">({{ row.relay }})</span>
+            {% else %}
+                <i class="fa-solid fa-x has-text-danger"></i>
+            {% endif %}
+        </td>
+        <td class="is-flex is-justify-content-center">
+            <a href="{% url 'relays:test-channel' row.pk %}" title="Test this channel">
+                <span class="icon">
+                    <i class="fa-solid fa-circle-check has-text-success"></i>
+                </span>
+            </a>
+            <a href="">
+                <span class="icon">
+                    <i class="fa-solid fa-pencil has-text-info"></i>
+                </span>
+            </a>
+            <a class="modal-button" data-target="delete-user-modal-{{ row.pk }}">
+                <span class="icon">
+                    <i class="fa-solid fa-trash has-text-danger"></i>
+                </span>
+            </a>
+        </td>
+    </tr>
+{% endblock %}
+{% block empty_message %}
+    No relay channels have been added yet.
+{% endblock %}
