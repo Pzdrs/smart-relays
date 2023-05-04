@@ -7,7 +7,6 @@ from django.db.models import Model, QuerySet, Q
 from django.urls import reverse
 
 from accounts.models import User
-from relays.utils.gpio import set_channel_state
 from relays.utils.text import value_or_default, truncate_string, translate_bool
 
 
@@ -47,6 +46,7 @@ class Channel(Model):
         test_channel.delay(self.pk)
 
     def synchronize(self):
+        from relays.utils.gpio import set_channel_state
         set_channel_state(self, self.relay.get_current_state().new_state)
 
 
