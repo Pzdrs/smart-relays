@@ -196,6 +196,7 @@ class RelayStateChangeQuerySet(QuerySet):
         return super().create(relay=relay, user=user, new_state=new_state)
 
     def toggle(self, relay: Relay, user: User) -> 'RelayStateChange':
+
         return self.create(relay=relay, user=user, new_state=not self.last_known_state(relay).new_state)
 
     def for_relay(self, relay: Relay) -> 'RelayStateChangeQuerySet':

@@ -1,5 +1,7 @@
 from django.apps import AppConfig
 
+from relays.tasks import sync_channels
+
 
 class RelaysConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
@@ -8,3 +10,4 @@ class RelaysConfig(AppConfig):
 
     def ready(self):
         from . import signals
+        sync_channels.delay()
