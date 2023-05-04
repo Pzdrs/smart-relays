@@ -132,7 +132,7 @@ class RelayChangeStateView(SmartRelaysView, View):
         return owner_or_at_least_control(request.user, self.relay)
 
     def post(self, request, *args, **kwargs):
-        self.relay.toggle()
+        self.relay.toggle(request)
         return HttpResponse()
 
 
