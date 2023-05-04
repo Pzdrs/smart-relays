@@ -45,10 +45,6 @@ class Channel(Model):
         from relays.tasks import test_channel
         test_channel.delay(self.pk)
 
-    def synchronize(self):
-        from relays.utils.gpio import set_channel_state
-        set_channel_state(self, self.relay.get_current_state().new_state)
-
 
 # ----------------------------------------------
 # Relay Models
@@ -64,12 +60,6 @@ class RelayQuerySet(QuerySet):
             Q(user=user) | Q(id__in=permitted_relay_ids)
         )
 
-    def synchronized(self) -> 'RelayQuerySet':
-        """
-        Returns a queryset of relays, which are to be synchronized with the database
-        """
-        return self.filter(synchronized=True)
-
 
 class Relay(BaseModel):
     # Queue that stores the requests when an update is issues to a Relay object
@@ -79,8 +69,6 @@ class Relay(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, default=default_relay_name)
     description = models.TextField(max_length=65535, blank=True, null=True)
-    # Determines whether the physical relay should be synced with the database upon startup
-    synchronized = models.BooleanField(default=True)
 
     objects = RelayQuerySet.as_manager()
 

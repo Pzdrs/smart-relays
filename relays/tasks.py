@@ -2,7 +2,7 @@ import time
 
 from relays.models import Channel
 from relays.models import Relay
-from relays.utils.gpio import toggle_channel
+from relays.utils.gpio import set_channel_state
 from smart_relays.celery import app
 
 
@@ -10,21 +10,19 @@ from smart_relays.celery import app
 def test_channel(channel_id: int):
     channel: Channel = Channel.objects.get(pk=channel_id)
     for _ in range(3):
-        toggle_channel(channel)
+        set_channel_state(channel, True)
         time.sleep(0.5)
 
-        toggle_channel(channel)
+        set_channel_state(channel, False)
         time.sleep(0.5)
 
 
 @app.task
 def toggle_relay(relay_id: int):
     relay: Relay = Relay.objects.get(pk=relay_id)
-    toggle_channel(relay.channel)
+
+    set_channel_state(relay.channel, True)
+    time.sleep(.1)
+    set_channel_state(relay.channel, False)
+
     relay.toggle()
-
-
-@app.task
-def sync_channels():
-    for relay in Relay.objects.synchronized():
-        relay.channel.synchronize()

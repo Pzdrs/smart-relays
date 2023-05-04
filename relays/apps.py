@@ -11,7 +11,5 @@ class RelaysConfig(AppConfig):
 
         # GPIO related initialization
         from relays.utils.gpio import init_GPIO
-        from relays.tasks import sync_channels
 
         init_GPIO()
-        sync_channels.delay()
