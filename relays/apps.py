@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 
+from relays.utils.gpio import init_GPIO
 from relays.tasks import sync_channels
 
 
@@ -10,4 +11,7 @@ class RelaysConfig(AppConfig):
 
     def ready(self):
         from . import signals
+
+        # GPIO related initialization
+        init_GPIO()
         sync_channels.delay()

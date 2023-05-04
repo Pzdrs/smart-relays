@@ -7,6 +7,7 @@ from django.db.models import Model, QuerySet, Q
 from django.urls import reverse
 
 from accounts.models import User
+from relays.utils.gpio import set_channel_state
 from relays.utils.text import value_or_default, truncate_string, translate_bool
 
 
@@ -39,15 +40,14 @@ class Channel(Model):
 
     @property
     def is_in_use(self):
-        return Relay.objects.filter(channel=self).exists()
-
-    @property
-    def relay(self):
-        return Relay.objects.filter(channel=self).first()
+        return self.relay is not None
 
     def test(self):
         from relays.tasks import test_channel
         test_channel.delay(self.pk)
+
+    def synchronize(self):
+        set_channel_state(self, self.relay.get_current_state().new_state)
 
 
 # ----------------------------------------------
@@ -64,6 +64,12 @@ class RelayQuerySet(QuerySet):
             Q(user=user) | Q(id__in=permitted_relay_ids)
         )
 
+    def synchronized(self) -> 'RelayQuerySet':
+        """
+        Returns a queryset of relays, which are to be synchronized with the database
+        """
+        return self.filter(synchronized=True)
+
 
 class Relay(BaseModel):
     # Queue that stores the requests when an update is issues to a Relay object
@@ -73,6 +79,8 @@ class Relay(BaseModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100, default=default_relay_name)
     description = models.TextField(max_length=65535, blank=True, null=True)
+    # Determines whether the physical relay should be synced with the database upon startup
+    synchronized = models.BooleanField(default=True)
 
     objects = RelayQuerySet.as_manager()
 
@@ -196,7 +204,6 @@ class RelayStateChangeQuerySet(QuerySet):
         return super().create(relay=relay, user=user, new_state=new_state)
 
     def toggle(self, relay: Relay, user: User) -> 'RelayStateChange':
-
         return self.create(relay=relay, user=user, new_state=not self.last_known_state(relay).new_state)
 
     def for_relay(self, relay: Relay) -> 'RelayStateChangeQuerySet':
