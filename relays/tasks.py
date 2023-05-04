@@ -1,9 +1,8 @@
 import time
 
-import RPi.GPIO as GPIO
-
 from relays.models import Channel
 from relays.models import Relay
+from relays.utils.gpio import toggle_channel
 from smart_relays.celery import app
 
 
@@ -11,17 +10,17 @@ from smart_relays.celery import app
 def test_channel(channel_id: int):
     channel: Channel = Channel.objects.get(pk=channel_id)
     for _ in range(3):
-        GPIO.output(channel.pin, GPIO.LOW)
+        toggle_channel(channel)
         time.sleep(0.5)
 
-        GPIO.output(channel.pin, GPIO.HIGH)
+        toggle_channel(channel)
         time.sleep(0.5)
-    GPIO.cleanup()
 
 
 @app.task
 def toggle_relay(relay_id: int):
     relay: Relay = Relay.objects.get(pk=relay_id)
+    toggle_channel(relay.channel)
     relay.toggle()
 
 
