@@ -147,7 +147,7 @@ class ChannelListView(SmartRelaysView, ListView):
 
 class ChannelUpdateView(SmartRelaysView, UpdateView):
     model = Channel
-#    form_class = ChannelUpdateForm
+    #    form_class = ChannelUpdateForm
     template_name = 'channel_form.html'
     title = 'Channel update'
 
@@ -161,7 +161,7 @@ class ChannelUpdateView(SmartRelaysView, UpdateView):
 class ChannelCreateView(SmartRelaysView, CreateView):
     http_method_names = ('post',)
     model = Channel
-#    form_class = ChannelCreateForm
+    #    form_class = ChannelCreateForm
     success_url = reverse_lazy('relays:channel-list')
 
     def form_invalid(self, form):
@@ -180,7 +180,13 @@ class ChannelDeleteView(SmartRelaysView, DeleteView):
 
 class ChannelTestView(SmartRelaysView, View):
     def get(self, request, *args, **kwargs):
-        messages.info(request, 'Testing channel...')
+        from relays.tasks import test_channel
+        channel: Channel = Channel.objects.get(pk=kwargs['pk'])
+
+        test_channel.delay(channel.pk)
+
+        messages.info(request, f'Testing channel <b>{channel}</b>...')
+
         return HttpResponseRedirect(reverse('relays:channel-list'))
 
 

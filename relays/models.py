@@ -7,6 +7,7 @@ from django.db.models import Model, QuerySet, Q
 from django.urls import reverse
 
 from accounts.models import User
+from relays.tasks import test_channel
 from relays.utils.text import value_or_default, truncate_string, translate_bool
 
 
@@ -29,6 +30,7 @@ class BaseModel(models.Model):
 # ----------------------------------------------
 # Channels
 # ----------------------------------------------
+
 class Channel(Model):
     name = models.CharField(max_length=100, default=default_channel_name)
     pin = models.IntegerField()
@@ -43,6 +45,9 @@ class Channel(Model):
     @property
     def relay(self):
         return Relay.objects.filter(channel=self).first()
+
+    def test(self):
+        test_channel.delay(self.pk)
 
 
 # ----------------------------------------------

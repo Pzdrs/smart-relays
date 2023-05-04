@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from relays.models import Channel
-from relays.utils.gpio import test_channel
+from relays.tasks import test_channel
 
 
 class Command(BaseCommand):
