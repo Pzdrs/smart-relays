@@ -132,7 +132,7 @@ class Relay(BaseModel):
     def toggle(self, request: HttpRequest):
         from relays.tasks import toggle_relay
         toggle_relay.delay(self.pk)
-        return not RelayStateChange.objects.toggle(self, request.user).new_state
+        return RelayStateChange.objects.toggle(self, request.user).new_state
 
     def get_possible_recipients(self) -> QuerySet:
         """
@@ -190,10 +190,11 @@ class RelayAuditRecord(Model):
 
 class RelayStateChangeQuerySet(QuerySet):
     def create(self, relay: Relay, user: User, new_state: bool) -> 'RelayStateChange':
-        return self.create(relay=relay, user=user, new_state=new_state)
+        return super().create(relay=relay, user=user, new_state=new_state)
 
     def toggle(self, relay: Relay, user: User) -> 'RelayStateChange':
-        return self.create(relay=relay, user=user, new_state=not self.last_known_state(relay).new_state)
+        current_state = relay.get_current_state()
+        return self.create(relay=relay, user=user, new_state=not current_state.new_state if current_state else True)
 
     def for_relay(self, relay: Relay) -> 'RelayStateChangeQuerySet':
         return self.filter(relay_id=relay.pk)
