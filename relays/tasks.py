@@ -12,6 +12,8 @@ def test_channel(channel_id: int):
     for _ in range(3):
         toggle_relay.delay(channel.relay.id)
         time.sleep(.5)
+        toggle_relay.delay(channel.relay.id)
+        time.sleep(.5)
 
 
 @app.task
