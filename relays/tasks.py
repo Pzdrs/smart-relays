@@ -24,5 +24,3 @@ def toggle_relay(relay_id: int):
     set_channel_state(relay.channel, True)
     time.sleep(.1)
     set_channel_state(relay.channel, False)
-
-    relay.toggle()

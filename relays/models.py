@@ -4,9 +4,11 @@ from queue import Queue
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import models
 from django.db.models import Model, QuerySet, Q
+from django.http import HttpRequest
 from django.urls import reverse
 
 from accounts.models import User
+from relays.tasks import toggle_relay
 from relays.utils.text import value_or_default, truncate_string, translate_bool
 
 
@@ -128,10 +130,9 @@ class Relay(BaseModel):
                     update_log.save()
         super().save(force_insert, force_update, using, update_fields)
 
-    def toggle(self):
-        current_state = self.get_current_state().new_state if self.get_current_state() else False
-        RelayStateChange(new_state=not current_state, relay=self).save()
-        return not current_state
+    def toggle(self, request: HttpRequest):
+        toggle_relay.delay(self.pk)
+        return not RelayStateChange.objects.toggle(self, request.user).new_state
 
     def get_possible_recipients(self) -> QuerySet:
         """
@@ -189,7 +190,7 @@ class RelayAuditRecord(Model):
 
 class RelayStateChangeQuerySet(QuerySet):
     def create(self, relay: Relay, user: User, new_state: bool) -> 'RelayStateChange':
-        return super().create(relay=relay, user=user, new_state=new_state)
+        return self.create(relay=relay, user=user, new_state=new_state)
 
     def toggle(self, relay: Relay, user: User) -> 'RelayStateChange':
         return self.create(relay=relay, user=user, new_state=not self.last_known_state(relay).new_state)
