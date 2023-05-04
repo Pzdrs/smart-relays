@@ -223,6 +223,21 @@ class RelayUpdateRecord(RelayAuditRecord):
         '''
 
 
+class RelayShareRecord(RelayAuditRecord):
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver')
+    state = models.BooleanField(default=True)
+
+    def clean(self):
+        if self.user.pk == self.receiver.pk:
+            raise ValidationError('User cannot share a relay with themselves')
+
+    def get_display(self):
+        if self.state:
+            return f'Started sharing with <i>{self.receiver}</i>'
+        else:
+            return f'Revoked sharing with <i>{self.receiver}</i>'
+
+
 # ----------------------------------------------
 # User Permissions
 # ----------------------------------------------
@@ -260,6 +275,15 @@ class UserRelayShare(BaseModel):
 
     def is_full_access(self) -> bool:
         return self.permission_level == self.PermissionLevel.FULL_ACCESS
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self._state.adding:
+            RelayShareRecord.objects.create(relay=self.relay, user=self.grantor(), receiver=self.user)
+        super().save(force_insert, force_update, using, update_fields)
+
+    def delete(self, using=None, keep_parents=False):
+        RelayShareRecord.objects.create(relay=self.relay, user=self.grantor(), receiver=self.user, state=False)
+        return super().delete(using, keep_parents)
 
     @staticmethod
     def highest_permission_level() -> int:
