@@ -19,54 +19,11 @@
             <p>{{ object.description }}</p>
         </div>
     </div>
+
     <p class="is-size-4">State history</p>
-    {% for state in state_history %}
-        {{ state.timestamp|json_script:'timestamp' }}
-        {{ state.state|json_script:'state' }}
-    {% endfor %}
+    <canvas id="history"></canvas>
+    <script src="{% static 'js/relay_detail.js' %}"></script>
 
-    <canvas id="myChart"></canvas>
-    <script>
-        function getStateLabel(state) {
-            if (state === 0) {
-                return 'OFF';
-            } else if (state === 1) {
-                return 'ON';
-            } else {
-                return '';
-            }
-        }
-
-        const data = JSON.parse(document.getElementById('state_history').textContent);
-        new Chart(document.getElementById('myChart'), {
-            type: 'line',
-            options: {
-                scales: {
-                    x: {
-                        type: 'time',
-                        grid: {
-                            display: false
-                        }
-                    },
-                    y: {
-                        ticks: {
-                            callback: value => getStateLabel(value)
-                        }
-                    }
-                }
-            },
-            data: {
-                labels: Object.keys(data),
-                datasets: [
-                    {
-                        label: 'Relay state',
-                        data: Object.values(data),
-                        stepped: true
-                    }
-                ],
-            }
-        });
-    </script>
     <div id="sharing" class="is-flex is-align-items-center mt-5 mb-2">
         <p class="is-size-4">Sharing</p>
         <div class="is-hidden-mobile ml-3">
@@ -77,6 +34,7 @@
         {% include 'includes/share_relay_form.html' with form=share_form %}
     </div>
     {% include 'includes/relay_shares_table.html' with shares=relay_shares %}
+
     <p class="is-size-4 mt-5">Audit log</p>
     {% include 'includes/audit_log_table__without_relays.html' with rows=audit_log limit=audit_log_limit.0 base_limit=audit_log_limit.1 limit_query_parameter='audit_log_limit' limit_button_id='limit-button' %}
 {% endblock %}
