@@ -1,4 +1,5 @@
 function toggleRelay(checkbox, relayId) {
+    checkbox.disabled = true;
     const currentState = checkbox.checked;
     fetch(`/relays/${relayId}/toggle/`, {
         method: 'POST',
@@ -19,4 +20,5 @@ function changeRelayState(relayId, state) {
         cardHeader.classList.remove('has-background-success-light');
         cardHeader.classList.add('has-background-danger-light');
     }
+    setTimeout(() => relaySwitch.disabled = false, 200);
 }
