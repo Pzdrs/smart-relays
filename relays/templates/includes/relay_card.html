@@ -21,7 +21,7 @@
                     id="relaySwitch{{ relay.pk }}"
                     type="checkbox"
                     class="switch is-rounded {% if relay.get_current_state.new_state %}is-success{% endif %}"
-                    onclick="toggleRelay({{ relay.pk }})"
+                    onclick="toggleRelay(this, {{ relay.pk }})"
                     {% if relay.get_current_state.new_state %}checked{% endif %}
                     {% if share.is_read_only %}disabled{% endif %}
             >

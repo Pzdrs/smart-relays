@@ -1,5 +1,5 @@
-function toggleRelay(relayId) {
-    const currentState = document.querySelector(`#relaySwitch${relayId}`).checked;
+function toggleRelay(checkbox, relayId) {
+    const currentState = checkbox.checked;
     fetch(`/relays/${relayId}/toggle/`, {
         method: 'POST',
         headers: {'X-CSRFToken': document.getElementById('csrf_token').innerText}

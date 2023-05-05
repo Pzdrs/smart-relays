@@ -1,7 +1,6 @@
 import time
 
 from relays.models import Channel
-from relays.models import Relay
 from relays.utils.gpio import set_channel_state
 from smart_relays.celery import app
 
