@@ -7,9 +7,4 @@ class RelaysConfig(AppConfig):
     audit_log_pagination_page_size = 10
 
     def ready(self):
-        from . import signals
-
-        # GPIO related initialization
-        from relays.utils.gpio import init_GPIO
-
-        init_GPIO()
+        pass
