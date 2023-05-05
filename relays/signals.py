@@ -12,6 +12,7 @@ def post_relay_create_signal(instance: Relay, created: bool, **kwargs):
 
 
 @receiver(post_migrate)
-def init_GPIO_post_migrate():
+def init_GPIO_post_migrate(**kwargs):
+    print('init_GPIO_post_migrate')
     from relays.utils.gpio import init_GPIO
     init_GPIO()

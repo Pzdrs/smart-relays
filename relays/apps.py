@@ -7,4 +7,4 @@ class RelaysConfig(AppConfig):
     audit_log_pagination_page_size = 10
 
     def ready(self):
-        pass
+        from . import signals
