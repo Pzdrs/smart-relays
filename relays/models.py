@@ -131,7 +131,7 @@ class Relay(BaseModel):
 
     def toggle(self, request: HttpRequest):
         from relays.tasks import toggle_relay
-        toggle_relay.delay(self.pk)
+        toggle_relay.delay(self.channel.pk)
         return RelayStateChange.objects.toggle(self, request.user).new_state
 
     def get_possible_recipients(self) -> QuerySet:
