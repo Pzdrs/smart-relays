@@ -1,10 +1,10 @@
 function toggleRelay(checkbox, relayId) {
     checkbox.disabled = true;
     checkbox.previousElementSibling.classList.toggle('loader');
-    // fetch(`/relays/${relayId}/toggle/`, {
-    //     method: 'POST',
-    //     headers: {'X-CSRFToken': document.getElementById('csrf_token').innerText}
-    // }).then(() => changeRelayState(relayId, checkbox.checked));
+    fetch(`/relays/${relayId}/toggle/`, {
+        method: 'POST',
+        headers: {'X-CSRFToken': document.getElementById('csrf_token').innerText}
+    }).then(() => changeRelayState(relayId, checkbox.checked));
 }
 
 function changeRelayState(relayId, state) {
