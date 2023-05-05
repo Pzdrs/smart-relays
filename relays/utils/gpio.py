@@ -6,8 +6,12 @@ from relays.models import Channel
 def init_GPIO():
     GPIO.setmode(GPIO.BCM)
     for channel in Channel.objects.all():
-        GPIO.setup(channel.pin, GPIO.OUT)
-        GPIO.output(channel.pin, GPIO.HIGH)
+        init_channel(channel)
+
+
+def init_channel(channel: Channel):
+    GPIO.setup(channel.pin, GPIO.OUT)
+    GPIO.output(channel.pin, GPIO.HIGH)
 
 
 def set_channel_state(channel: Channel, state: bool):
