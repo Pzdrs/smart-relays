@@ -1,7 +1,7 @@
 from django import forms
 
 from accounts.models import User
-from relays.models import Relay, UserRelayShare
+from relays.models import Relay, UserRelayShare, Channel
 from smart_relays.utils.config import get_project_config
 
 
