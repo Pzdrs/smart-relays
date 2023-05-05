@@ -11,9 +11,9 @@ class RelaysConfig(AppConfig):
     def ready(self):
         from . import signals
 
-        if not self.__has_unapplied_migrations():
-            from relays.utils.gpio import init_GPIO
-            init_GPIO()
+        # if not self.__has_unapplied_migrations():
+        #     from relays.utils.gpio import init_GPIO
+        #     init_GPIO()
 
     def __has_unapplied_migrations(self):
         executor = MigrationExecutor(connections[DEFAULT_DB_ALIAS])

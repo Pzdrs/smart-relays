@@ -1,10 +1,10 @@
 function toggleRelay(checkbox, relayId) {
     checkbox.disabled = true;
-    const currentState = checkbox.checked;
-    fetch(`/relays/${relayId}/toggle/`, {
-        method: 'POST',
-        headers: {'X-CSRFToken': document.getElementById('csrf_token').innerText}
-    }).then(() => changeRelayState(relayId, currentState));
+    checkbox.previousElementSibling.classList.toggle('loader');
+    // fetch(`/relays/${relayId}/toggle/`, {
+    //     method: 'POST',
+    //     headers: {'X-CSRFToken': document.getElementById('csrf_token').innerText}
+    // }).then(() => changeRelayState(relayId, checkbox.checked));
 }
 
 function changeRelayState(relayId, state) {
@@ -20,5 +20,8 @@ function changeRelayState(relayId, state) {
         cardHeader.classList.remove('has-background-success-light');
         cardHeader.classList.add('has-background-danger-light');
     }
-    setTimeout(() => relaySwitch.disabled = false, 200);
+    setTimeout(() => {
+        relaySwitch.disabled = false
+        relaySwitch.previousElementSibling.classList.toggle('loader');
+    }, 200);
 }
