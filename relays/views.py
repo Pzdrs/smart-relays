@@ -157,6 +157,7 @@ class ChannelUpdateView(SmartRelaysView, UpdateView):
     form_class = ChannelForm
     template_name = 'channel_form.html'
     title = 'Channel update'
+    success_url = reverse_lazy('relays:channel-list')
 
     def test_func(self, request: HttpRequest):
         return superuser(request.user)
