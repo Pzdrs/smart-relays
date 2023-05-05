@@ -1,0 +1,17 @@
+{% extends 'base_modal.html' %}
+{% load common_template %}
+{% block id %}create-channel-modal{% endblock %}
+{% block animation %}modal-fx-fadeInScale{% endblock %}
+{% block header %}
+    <p class="card-header-title">
+        Create a new channel
+    </p>
+{% endblock %}
+{% block content %}
+    <form method="post" action="{% url 'relays:channel-create' %}">{% csrf_token %}
+        {% render_form create_form %}
+        <div class="field">
+            <input type="submit" class="button is-link" value="Save"/>
+        </div>
+    </form>
+{% endblock %}

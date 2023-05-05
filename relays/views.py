@@ -7,7 +7,7 @@ from django.views.generic import ListView, DetailView, DeleteView, UpdateView, C
 
 from accounts.utils.access.user_relay_access_tests import owner_or_shared, owner_or_full_access, \
     owner_or_at_least_control, superuser
-from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm
+from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm, ChannelForm
 from relays.models import Relay, RelayStateChange, RelayCreateRecord, RelayUpdateRecord, UserRelayShare, \
     RelayShareRecord, Channel
 from relays.utils.relay import relay_slots_breakdown
@@ -140,14 +140,21 @@ class RelayChangeStateView(SmartRelaysView, View):
 # Channel Views
 # ----------------------------------------
 class ChannelListView(SmartRelaysView, ListView):
-    template_name = 'channels.html'
+    template_name = 'channel_list.html'
     title = 'Channels'
     model = Channel
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['create_form'] = ChannelForm()
+
+        return context
 
 
 class ChannelUpdateView(SmartRelaysView, UpdateView):
     model = Channel
-    #    form_class = ChannelUpdateForm
+    form_class = ChannelForm
     template_name = 'channel_form.html'
     title = 'Channel update'
 
@@ -161,7 +168,7 @@ class ChannelUpdateView(SmartRelaysView, UpdateView):
 class ChannelCreateView(SmartRelaysView, CreateView):
     http_method_names = ('post',)
     model = Channel
-    #    form_class = ChannelCreateForm
+    form_class = ChannelForm
     success_url = reverse_lazy('relays:channel-list')
 
     def form_invalid(self, form):

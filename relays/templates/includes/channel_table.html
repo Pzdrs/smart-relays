@@ -2,7 +2,7 @@
 {% load relays_template %}
 {% block head %}
     <th>Name</th>
-    <th>GPIO Pin</th>
+    <th>GPIO Pin <span class="has-text-weight-normal">(BCM)</span></th>
     <th>In use</th>
     <th style="text-align: center">Actions</th>
 {% endblock %}
@@ -19,17 +19,17 @@
             {% endif %}
         </td>
         <td class="is-flex is-justify-content-center">
-            <a href="{% url 'relays:test-channel' row.pk %}" title="Test this channel">
+            <a href="{% url 'relays:channel-test' row.pk %}" title="Test this channel">
                 <span class="icon">
                     <i class="fa-solid fa-circle-check has-text-success"></i>
                 </span>
             </a>
-            <a href="">
+            <a href="{% url 'relays:channel-update' row.pk %}">
                 <span class="icon">
                     <i class="fa-solid fa-pencil has-text-info"></i>
                 </span>
             </a>
-            <a class="modal-button" data-target="delete-user-modal-{{ row.pk }}">
+            <a class="modal-button" data-target="delete-channel-modal-{{ row.pk }}">
                 <span class="icon">
                     <i class="fa-solid fa-trash has-text-danger"></i>
                 </span>

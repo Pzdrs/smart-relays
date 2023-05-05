@@ -2,7 +2,7 @@ from django.urls import path
 
 from relays.views import RelayListView, RelayDetailView, RelayUpdateView, RelayDeleteView, AuditLogView, \
     RelayCreateView, CreateRelayShareView, RevokeRelayShareView, RelayShareUpdateView, RelayChangeStateView, \
-    ChannelListView, ChannelUpdateView, ChannelDeleteView, ChannelTestView
+    ChannelListView, ChannelUpdateView, ChannelDeleteView, ChannelTestView, ChannelCreateView
 
 app_name = 'relays'
 
@@ -16,15 +16,16 @@ urlpatterns = [
 
     # Channels
     path('channels/', ChannelListView.as_view(), name='channel-list'),
-    path('channels/<int:pk>/update', ChannelUpdateView.as_view(), name='update-channel'),
-    path('channels/<int:pk>/delete', ChannelDeleteView.as_view(), name='delete-channel'),
-    path('channels/<int:pk>/test', ChannelTestView.as_view(), name='test-channel'),
+    path('channels/create/', ChannelCreateView.as_view(), name='channel-create'),
+    path('channels/<int:pk>/update/', ChannelUpdateView.as_view(), name='channel-update'),
+    path('channels/<int:pk>/delete/', ChannelDeleteView.as_view(), name='channel-delete'),
+    path('channels/<int:pk>/test/', ChannelTestView.as_view(), name='channel-test'),
 
     # Audit Log
     path('auditlog/', AuditLogView.as_view(), name='audit-log'),
 
     # Shares
-    path('<int:pk>/share', CreateRelayShareView.as_view(), name='share-relay'),
-    path('shares/<int:pk>/revoke', RevokeRelayShareView.as_view(), name='revoke-share'),
-    path('shares/<int:pk>/bump', RelayShareUpdateView.as_view(), name='bump-share-permissions')
+    path('<int:pk>/share/', CreateRelayShareView.as_view(), name='share-relay'),
+    path('shares/<int:pk>/revoke/', RevokeRelayShareView.as_view(), name='revoke-share'),
+    path('shares/<int:pk>/bump/', RelayShareUpdateView.as_view(), name='bump-share-permissions')
 ]

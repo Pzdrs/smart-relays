@@ -1,0 +1,16 @@
+{% extends 'base_template.html' %}
+{% block body_content %}
+    <div class="columns is-multiline">
+        <div class="column is-12">
+            {% include 'includes/channel_table.html' with rows=object_list %}
+        </div>
+        {% include 'includes/create_modal_button.html' with label='Add channel' data_target='create-channel-modal' %}
+    </div>
+{% endblock %}
+{% block modals %}
+    {% for channel in object_list %}
+        {% include 'modals/delete_channel_modal.html' with channel=channel %}
+    {% endfor %}
+
+    {% include 'modals/create_channel_modal.html' %}
+{% endblock %}

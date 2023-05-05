@@ -1,0 +1,19 @@
+{% extends 'base_template.html' %}
+{% load common_template %}
+{% block body_content %}
+    <div class="columns">
+        <div class="column is-full is-6-desktop">
+            <form method="post">{% csrf_token %}
+                {% render_form form %}
+                <div class="field is-grouped">
+                    <div class="control">
+                        <input type="submit" class="button is-link" value="Save"/>
+                    </div>
+                    <div class="control">
+                        <a href="{% url 'relays:channel-list' %}" class="button is-link is-light">Cancel</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

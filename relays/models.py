@@ -30,10 +30,16 @@ class BaseModel(models.Model):
 # ----------------------------------------------
 # Channels
 # ----------------------------------------------
+class ChannelQuerySet(QuerySet):
+    def unused(self) -> 'ChannelQuerySet':
+        return self.filter(relay__isnull=True)
+
 
 class Channel(Model):
     name = models.CharField(max_length=100, default=default_channel_name)
     pin = models.IntegerField()
+
+    objects = ChannelQuerySet.as_manager()
 
     def __str__(self):
         return f'{self.name} ({self.pin})'
@@ -130,8 +136,8 @@ class Relay(BaseModel):
         super().save(force_insert, force_update, using, update_fields)
 
     def toggle(self, request: HttpRequest):
-        # from relays.tasks import toggle_relay
-        # toggle_relay.delay(self.channel.pk)
+        from relays.tasks import toggle_relay
+        toggle_relay.delay(self.channel.pk)
         return RelayStateChange.objects.toggle(self, request.user).new_state
 
     def get_possible_recipients(self) -> QuerySet:

@@ -47,6 +47,10 @@ class RelayCreateForm(forms.ModelForm):
             'description': 'A description of the relay',
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['channel'].queryset = Channel.objects.unused()
+
     def clean(self):
         if Relay.objects.count() >= get_project_config().max_relays:
             raise forms.ValidationError('There are no relay slots left.')
@@ -65,3 +69,17 @@ class ShareRelayForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['user'].queryset = possible_recipients if possible_recipients is not None else User.objects.all()
         self.fields['permission_level'].choices = UserRelayShare.PermissionLevel.choices
+
+
+class ChannelForm(forms.ModelForm):
+    class Meta:
+        model = Channel
+        fields = '__all__'
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'input'}),
+            'pin': forms.NumberInput(attrs={'class': 'input'}),
+        }
+        help_texts = {
+            'name': 'The name of the relay',
+            'pin': 'The GPIO pin number (BCM)',
+        }
