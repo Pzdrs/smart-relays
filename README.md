@@ -19,6 +19,8 @@ for easy integration with other applications, such as **Node-RED** or **Home Ass
 - [ ] Scheduled tasks
 - [ ] Built-in HTTP API
 - [x] Audit log pagination - both global and in relay detail
+### Shit to fix
+- Show more kind of pagination jede do nekonecna, musim tam dat nejakej cap
 ## Time tracking
-### Desktop: 44h
+### Desktop: 53.5h
 ### Laptop: 14.25h
