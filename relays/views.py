@@ -1,6 +1,7 @@
 import json
 
 from django.contrib import messages
+from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
@@ -16,7 +17,7 @@ from relays.models import Relay, RelayStateChange, RelayCreateRecord, RelayUpdat
 from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
 from smart_relays.models import ApplicationData
-from smart_relays.utils.config import get_relays_config
+from smart_relays.utils.config import get_relays_config, get_project_config
 from smart_relays.utils.template import push_form_errors_to_messages
 from smart_relays.views import SmartRelaysView
 
@@ -32,6 +33,11 @@ class WizardView(SmartRelaysView, TemplateView):
         context['wizard_data'] = ApplicationData.objects.get(key='setup_wizard').data
 
         return context
+
+    def get(self, request, *args, **kwargs):
+        if ApplicationData.objects.get(key='setup_wizard').data['completed']:
+            return HttpResponseRedirect(get_project_config().default_page)
+        return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         wizard_data = ApplicationData.objects.get(key='setup_wizard')
@@ -51,6 +57,8 @@ class WizardView(SmartRelaysView, TemplateView):
             admin.is_superuser = True
             admin.is_staff = True
             admin.save()
+
+            login(request, admin)
 
             wizard_data.data['step'] = 1
             wizard_data.save()
