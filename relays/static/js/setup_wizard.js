@@ -12,7 +12,7 @@ if (wizard_data.step === 1) {
     addGPIOPinForm(true);
 } else if (wizard_data.step === 2) {
     setTimeout(() => {
-        window.location.reload();
+        document.querySelector('#wizard-form').submit();
     }, 5000);
 }
 
@@ -41,10 +41,11 @@ function testChannel(button) {
         });
 }
 
-function onSubmit(form) {
-    const pinsInput = document.querySelector('input[name=pins]');
-    const pinInputs = document.querySelectorAll('input[type=number]');
-    pinsInput.value = JSON.stringify(Array.from(pinInputs).map(input => input.value));
-    console.log(pinsInput.value);
+function onSubmit() {
+    if (wizard_data.step === 1) {
+        const pinsInput = document.querySelector('input[name=pins]');
+        const pinInputs = document.querySelectorAll('input[type=number]');
+        pinsInput.value = JSON.stringify(Array.from(pinInputs).map(input => input.value));
+    }
     return true;
 }
