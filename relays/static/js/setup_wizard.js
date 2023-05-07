@@ -13,8 +13,7 @@ if (wizard_data.completed) {
     setTimeout(() => {
         window.location.replace(window.location.origin);
     }, 5000);
-}
-if (wizard_data.step === 1) {
+} else if (wizard_data.step === 1) {
     addGPIOPinForm(true);
 }
 
@@ -53,4 +52,12 @@ function testChannel(button) {
     fetch(`${button.dataset['href']}?pin=${input.value}`)
         .then(_ => {
         });
+}
+
+function onSubmit(form) {
+    const pinsInput = document.querySelector('input[name=pins]');
+    const pinInputs = document.querySelectorAll('input[type=number]');
+    pinsInput.value = JSON.stringify(Array.from(pinInputs).map(input => input.value));
+    console.log(pinsInput.value);
+    return true;
 }

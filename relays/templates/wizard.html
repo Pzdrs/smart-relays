@@ -45,7 +45,7 @@
                             {% endif %}
                         </div>
                         <div class="step-content has-text-centered is-active">
-                            <form method="post">
+                            <form method="post" onsubmit="return onSubmit(this)">
                                 {% csrf_token %}
                                 <input class="wizard-step-input" type="hidden" name="step">
                                 {% if wizard_data.step == 0 %}

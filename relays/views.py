@@ -1,3 +1,5 @@
+import json
+
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import redirect, render
@@ -52,6 +54,8 @@ class WizardView(SmartRelaysView, TemplateView):
         return HttpResponseRedirect(request.path)
 
     def __step_1_handler(self, request: HttpRequest, wizard_data: ApplicationData):
+        for pin in list(json.loads(str(request.POST['pins']))):
+            Channel.objects.create(pin=pin)
         wizard_data.data['step'] = 2
         wizard_data.data['completed'] = True
         wizard_data.save()

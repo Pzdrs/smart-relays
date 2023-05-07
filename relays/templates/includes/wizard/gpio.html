@@ -8,6 +8,7 @@
     <div class="column is-8" id="gpio-pins"></div>
     <div class="column is-2"></div>
 </div>
+<input type="hidden" name="pins">
 <hr>
 <div class="buttons is-right mt-5">
     <a class="button is-primary" onclick="addGPIOPinForm()">
@@ -16,8 +17,9 @@
         </span>
         <span>Add GPIO pin</span>
     </a>
-    <a class="button is-success">Apply</a>
+    <button class="button is-success">Apply</button>
 </div>
+
 <template id="add-gpio-pin-form">
     <div class="field has-addons has-addons-centered">
         <div class="control is-expanded">
