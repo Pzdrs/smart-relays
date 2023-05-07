@@ -1,6 +1,5 @@
-import RPi.GPIO as GPIO
-
 from relays.models import Channel
+import RPi.GPIO as GPIO
 
 
 def init_GPIO():
@@ -11,8 +10,8 @@ def init_GPIO():
 
 
 def init_channel(channel: Channel):
-    GPIO.setup(channel.pin, GPIO.OUT)
-    GPIO.output(channel.pin, GPIO.HIGH)
+    GPIO.setup(int(channel.pin), GPIO.OUT)
+    GPIO.output(int(channel.pin), GPIO.HIGH)
 
 
 def set_channel_state(pin: int, state: bool):

@@ -46,7 +46,12 @@ class WizardView(SmartRelaysView, TemplateView):
     def __step_0_handler(self, request: HttpRequest, wizard_data: ApplicationData):
         form = UserCreateForm(request.POST)
         if form.is_valid():
-            form.save()
+            admin = form.save()
+
+            admin.is_superuser = True
+            admin.is_staff = True
+            admin.save()
+
             wizard_data.data['step'] = 1
             wizard_data.save()
         else:
