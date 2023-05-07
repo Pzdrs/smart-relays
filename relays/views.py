@@ -69,7 +69,7 @@ class WizardView(SmartRelaysView, TemplateView):
         return HttpResponseRedirect(request.path)
 
     def __step_1_handler(self, request: HttpRequest, wizard_data: ApplicationData):
-        for pin in list(json.loads(str(request.POST['pins']))):
+        for pin in [pin for pin in list(json.loads(str(request.POST['pins']))) if pin]:
             Channel.objects.create(pin=pin)
         wizard_data.data['step'] = 2
         wizard_data.save()
