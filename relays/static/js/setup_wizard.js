@@ -8,13 +8,12 @@ Array.from(wizard_steps).slice(0, wizard_data.step + 1).forEach((step) => {
 document.querySelectorAll('.wizard-step-input').forEach((input) => {
     input.value = wizard_data.step;
 });
-
-if (wizard_data.completed) {
-    setTimeout(() => {
-        window.location.replace(window.location.origin);
-    }, 5000);
-} else if (wizard_data.step === 1) {
+if (wizard_data.step === 1) {
     addGPIOPinForm(true);
+} else if (wizard_data.step === 2) {
+    setTimeout(() => {
+        window.location.refresh();
+    }, 5000);
 }
 
 
