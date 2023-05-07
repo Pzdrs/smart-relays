@@ -9,11 +9,13 @@ class RelaysConfig(AppConfig):
     audit_log_pagination_page_size = 10
 
     def ready(self):
-        from smart_relays.models import ApplicationData
-        ApplicationData.objects.get_or_create(key='setup_wizard', defaults={'data': {'completed': False, 'step': 0}})
-
         if not self.__has_unapplied_migrations():
+            from smart_relays.models import ApplicationData
             from relays.utils.gpio import init_GPIO
+            ApplicationData.objects.get_or_create(
+                key='setup_wizard',
+                defaults={'data': {'completed': False, 'step': 0}}
+            )
             init_GPIO()
 
     def __has_unapplied_migrations(self):
