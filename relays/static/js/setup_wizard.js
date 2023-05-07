@@ -16,18 +16,6 @@ if (wizard_data.step === 1) {
     }, 5000);
 }
 
-
-function onPasswordFieldChange() {
-    const password = document.querySelector('input[name=password1]');
-    const confirm = document.querySelector('input[name=password2]');
-    if (confirm.value === password.value) {
-        confirm.setCustomValidity('');
-    } else {
-        confirm.setCustomValidity('Passwords do not match');
-    }
-    confirm.reportValidity();
-}
-
 function addGPIOPinForm(first = false) {
     const form_container = document.querySelector('#gpio-pins');
     const form_template = document.querySelector('#add-gpio-pin-form');
