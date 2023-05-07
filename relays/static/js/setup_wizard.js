@@ -14,6 +14,9 @@ if (wizard_data.completed) {
         window.location.replace(window.location.origin);
     }, 5000);
 }
+if (wizard_data.step === 1) {
+    addGPIOPinForm(true);
+}
 
 function onPasswordFieldChange() {
     const password = document.querySelector('input[name=password1]');
@@ -24,4 +27,16 @@ function onPasswordFieldChange() {
         confirm.setCustomValidity('Passwords do not match');
     }
     confirm.reportValidity();
+}
+
+function addGPIOPinForm(first = false) {
+    const form_container = document.querySelector('#gpio-pins');
+    const form_template = document.querySelector('#add-gpio-pin-form');
+
+    const form = form_template.content.cloneNode(true);
+
+    const delete_button = form.querySelector('.is-danger');
+    if (first) delete_button.parentElement.remove();
+
+    form_container.appendChild(form);
 }

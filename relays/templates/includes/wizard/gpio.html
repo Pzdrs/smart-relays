@@ -1,8 +1,43 @@
-gpio
-<div class="field has-text-right">
-    <p class="control">
-        <button class="button is-success">
-            Apply
-        </button>
-    </p>
+<h1 class="title is-6 mb-2">
+    The application needs to know what GPIO pins it will be using to control the relays. Consult your relay board's
+    documentation to find out which GPIO pins are used for each channel.
+</h1>
+<h1 class="title is-7">You can add/delete GPIO channels in the app later</h1>
+<div class="columns">
+    <div class="column is-2"></div>
+    <div class="column is-8" id="gpio-pins"></div>
+    <div class="column is-2"></div>
 </div>
+<hr>
+<div class="buttons is-right mt-5">
+    <a class="button is-primary" onclick="addGPIOPinForm()">
+        <span class="icon">
+            <i class="fa-solid fa-plus"></i>
+        </span>
+        <span>Add GPIO pin</span>
+    </a>
+    <a class="button is-success">Apply</a>
+</div>
+<template id="add-gpio-pin-form">
+    <div class="field has-addons has-addons-centered">
+        <div class="control is-expanded">
+            <input class="input" type="number" placeholder="GPIO pin">
+        </div>
+        <div class="control">
+            <a class="button is-info">
+                <span class="icon">
+                    <i class="fa-solid fa-check-circle"></i>
+                </span>
+                <span>Test</span>
+            </a>
+        </div>
+        <div class="control">
+            <button type="button" class="button is-danger" onclick="this.parentElement.parentElement.remove()">
+                <span class="icon">
+                    <i class="fa-solid fa-trash"></i>
+                </span>
+                <span>Delete</span>
+            </button>
+        </div>
+    </div>
+</template>

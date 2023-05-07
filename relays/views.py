@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView, TemplateView
@@ -22,6 +22,7 @@ from smart_relays.views import SmartRelaysView
 class WizardView(SmartRelaysView, TemplateView):
     template_name = 'wizard.html'
     title = 'Setup Wizard'
+    login_required = False
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -55,6 +56,11 @@ class WizardView(SmartRelaysView, TemplateView):
         wizard_data.data['completed'] = True
         wizard_data.save()
         return HttpResponseRedirect(request.path)
+
+
+def get_add_gpio_pin_form(request: HttpRequest):
+    return render(request, 'includes/add_gpio_pin_form.html')
+
 
 # ----------------------------------------
 # Relay Views
