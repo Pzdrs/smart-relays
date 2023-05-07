@@ -12,7 +12,7 @@ if (wizard_data.step === 1) {
     addGPIOPinForm(true);
 } else if (wizard_data.step === 2) {
     setTimeout(() => {
-        window.location.refresh();
+        window.location.reload();
     }, 5000);
 }
 
