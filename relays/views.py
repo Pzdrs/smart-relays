@@ -47,6 +47,8 @@ class WizardView(SmartRelaysView, TemplateView):
                 return self.__step_0_handler(request, wizard_data)
             case 1:
                 return self.__step_1_handler(request, wizard_data)
+            case 2:
+                return self.__setp_2_handler(request, wizard_data)
         return HttpResponseRedirect(request.path)
 
     def __step_0_handler(self, request: HttpRequest, wizard_data: ApplicationData):
