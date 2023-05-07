@@ -1,0 +1,66 @@
+{% extends 'base_template.html' %}
+{% load static %}
+{% block extra_css %}
+    <link href="{% static 'css/bulma-steps.min.css' %}" rel="stylesheet">
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'js/setup_wizard.js' %}" defer></script>
+    {{ wizard_data|json_script:"wizard_data" }}
+{% endblock %}
+{% block navigation %}{% endblock %}
+{% block header %}{% endblock %}
+{% block body %}
+    <div class="container mt-5">
+        <div class="steps">
+            <div class="step-item">
+                <div class="step-marker">1</div>
+                <div class="step-details">
+                    <p class="step-title">Account</p>
+                </div>
+            </div>
+            <div class="step-item">
+                <div class="step-marker">2</div>
+                <div class="step-details">
+                    <p class="step-title">GPIO</p>
+                </div>
+            </div>
+            <div class="step-item">
+                <div class="step-marker">3</div>
+                <div class="step-details">
+                    <p class="step-title">Finish</p>
+                </div>
+            </div>
+            <div class="steps-content">
+                <div class="columns">
+                    <div class="column is-3"></div>
+                    <div class="column is-6">
+                        <div class="mb-5">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="notification {{ message.tags }}">
+                                        <button class="delete" onclick="this.parentElement.remove()"></button>
+                                        {{ message|safe }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="step-content has-text-centered is-active">
+                            <form method="post">
+                                {% csrf_token %}
+                                <input class="wizard-step-input" type="hidden" name="step">
+                                {% if wizard_data.step == 0 %}
+                                    {% include 'includes/wizard/create_admin.html' %}
+                                {% elif wizard_data.step == 1 %}
+                                    {% include 'includes/wizard/gpio.html' %}
+                                {% elif wizard_data.step == 2 %}
+                                    {% include 'includes/wizard/finish.html' %}
+                                {% endif %}
+                            </form>
+                        </div>
+                    </div>
+                    <div class="column is-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

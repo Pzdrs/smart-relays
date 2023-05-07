@@ -2,11 +2,13 @@ from django.urls import path
 
 from relays.views import RelayListView, RelayDetailView, RelayUpdateView, RelayDeleteView, AuditLogView, \
     RelayCreateView, CreateRelayShareView, RevokeRelayShareView, RelayShareUpdateView, RelayChangeStateView, \
-    ChannelListView, ChannelUpdateView, ChannelDeleteView, ChannelTestView, ChannelCreateView
+    ChannelListView, ChannelUpdateView, ChannelDeleteView, ChannelTestView, ChannelCreateView, WizardView
 
 app_name = 'relays'
 
 urlpatterns = [
+    path('setup/', WizardView.as_view(), name='setup-wizard'),
+
     path('', RelayListView.as_view(), name='relay-list'),
     path('create/', RelayCreateView.as_view(), name='relay-create'),
     path('<int:pk>/', RelayDetailView.as_view(), name='relay-detail'),

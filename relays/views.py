@@ -3,8 +3,9 @@ from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, HttpRe
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
-from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView, TemplateView
 
+from accounts.forms import UserCreateForm
 from accounts.utils.access.user_relay_access_tests import owner_or_shared, owner_or_full_access, \
     owner_or_at_least_control, superuser
 from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm, ChannelForm
@@ -12,10 +13,48 @@ from relays.models import Relay, RelayStateChange, RelayCreateRecord, RelayUpdat
     RelayShareRecord, Channel
 from relays.utils.relay import relay_slots_breakdown
 from relays.utils.template import get_progress_bar_color
+from smart_relays.models import ApplicationData
 from smart_relays.utils.config import get_relays_config
 from smart_relays.utils.template import push_form_errors_to_messages
 from smart_relays.views import SmartRelaysView
 
+
+class WizardView(SmartRelaysView, TemplateView):
+    template_name = 'wizard.html'
+    title = 'Setup Wizard'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['wizard_data'] = ApplicationData.objects.get(key='setup_wizard').data
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        wizard_data = ApplicationData.objects.get(key='setup_wizard')
+        current_step = int(request.POST.get('step'))
+        match current_step:
+            case 0:
+                return self.__step_0_handler(request, wizard_data)
+            case 1:
+                return self.__step_1_handler(request, wizard_data)
+        return HttpResponseRedirect(request.path)
+
+    def __step_0_handler(self, request: HttpRequest, wizard_data: ApplicationData):
+        form = UserCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            wizard_data.data['step'] = 1
+            wizard_data.save()
+        else:
+            push_form_errors_to_messages(request, form)
+        return HttpResponseRedirect(request.path)
+
+    def __step_1_handler(self, request: HttpRequest, wizard_data: ApplicationData):
+        wizard_data.data['step'] = 2
+        wizard_data.data['completed'] = True
+        wizard_data.save()
+        return HttpResponseRedirect(request.path)
 
 # ----------------------------------------
 # Relay Views

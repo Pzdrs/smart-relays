@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from django.db import connections, DEFAULT_DB_ALIAS, OperationalError
+from django.db import connections, DEFAULT_DB_ALIAS
 from django.db.migrations.executor import MigrationExecutor
 
 
@@ -9,11 +9,12 @@ class RelaysConfig(AppConfig):
     audit_log_pagination_page_size = 10
 
     def ready(self):
-        from . import signals
+        from smart_relays.models import ApplicationData
+        ApplicationData.objects.get_or_create(key='setup_wizard', defaults={'data': {'completed': False, 'step': 0}})
 
-        if not self.__has_unapplied_migrations():
-            from relays.utils.gpio import init_GPIO
-            init_GPIO()
+        # if not self.__has_unapplied_migrations():
+        #     from relays.utils.gpio import init_GPIO
+        #     init_GPIO()
 
     def __has_unapplied_migrations(self):
         executor = MigrationExecutor(connections[DEFAULT_DB_ALIAS])
