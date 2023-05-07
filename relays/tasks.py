@@ -8,16 +8,25 @@ from smart_relays.celery import app
 @app.task
 def test_channel(channel_id: int):
     channel: Channel = Channel.objects.get(pk=channel_id)
+    test_pin(channel.pin)
+
+
+@app.task
+def test_pin(pin: int):
     for _ in range(3):
-        toggle_relay(channel.id)
+        __toggle_relay(pin)
         time.sleep(.5)
-        toggle_relay(channel.id)
+        __toggle_relay(pin)
         time.sleep(.5)
 
 
 @app.task
 def toggle_relay(channel_id: int):
     channel: Channel = Channel.objects.get(pk=channel_id)
-    set_channel_state(channel, True)
+    __toggle_relay(channel.pin)
+
+
+def __toggle_relay(pin: int):
+    set_channel_state(pin, True)
     time.sleep(.1)
-    set_channel_state(channel, False)
+    set_channel_state(pin, False)

@@ -58,8 +58,11 @@ class WizardView(SmartRelaysView, TemplateView):
         return HttpResponseRedirect(request.path)
 
 
-def get_add_gpio_pin_form(request: HttpRequest):
-    return render(request, 'includes/add_gpio_pin_form.html')
+def test_relay_channel(request: HttpRequest):
+    pin = int(request.GET.get('pin') or 0)
+    from relays.tasks import test_pin
+    test_pin.delay(pin)
+    return HttpResponse()
 
 
 # ----------------------------------------

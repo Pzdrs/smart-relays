@@ -2,7 +2,7 @@ from django.urls import path
 
 from relays.views import RelayListView, RelayDetailView, RelayUpdateView, RelayDeleteView, AuditLogView, \
     RelayCreateView, CreateRelayShareView, RevokeRelayShareView, RelayShareUpdateView, RelayChangeStateView, \
-    ChannelListView, ChannelUpdateView, ChannelDeleteView, ChannelTestView, ChannelCreateView, WizardView
+    ChannelListView, ChannelUpdateView, ChannelDeleteView, ChannelTestView, ChannelCreateView, WizardView, test_relay_channel
 
 app_name = 'relays'
 
@@ -22,6 +22,7 @@ urlpatterns = [
     path('channels/<int:pk>/update/', ChannelUpdateView.as_view(), name='channel-update'),
     path('channels/<int:pk>/delete/', ChannelDeleteView.as_view(), name='channel-delete'),
     path('channels/<int:pk>/test/', ChannelTestView.as_view(), name='channel-test'),
+    path('internal/testchannel/', test_relay_channel, name='test-channel'),
 
     # Audit Log
     path('auditlog/', AuditLogView.as_view(), name='audit-log'),

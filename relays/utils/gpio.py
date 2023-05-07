@@ -15,6 +15,6 @@ def init_channel(channel: Channel):
     GPIO.output(channel.pin, GPIO.HIGH)
 
 
-def set_channel_state(channel: Channel, state: bool):
-    GPIO.setup(channel.pin, GPIO.OUT)
-    GPIO.output(channel.pin, GPIO.LOW if state else GPIO.HIGH)
+def set_channel_state(pin: int, state: bool):
+    GPIO.setup(pin, GPIO.OUT)
+    GPIO.output(pin, GPIO.LOW if state else GPIO.HIGH)

@@ -18,6 +18,7 @@ if (wizard_data.step === 1) {
     addGPIOPinForm(true);
 }
 
+
 function onPasswordFieldChange() {
     const password = document.querySelector('input[name=password1]');
     const confirm = document.querySelector('input[name=password2]');
@@ -39,4 +40,17 @@ function addGPIOPinForm(first = false) {
     if (first) delete_button.parentElement.remove();
 
     form_container.appendChild(form);
+}
+
+function testChannel(button) {
+    const input = button.parentElement.previousElementSibling.querySelector('input');
+    if (input.value === '') {
+        input.setCustomValidity('Please fill out this field.');
+        input.reportValidity();
+        return;
+    }
+
+    fetch(`${button.dataset['href']}?pin=${input.value}`)
+        .then(_ => {
+        });
 }

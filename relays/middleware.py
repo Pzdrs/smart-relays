@@ -20,7 +20,7 @@ class SetupWizardMiddleware(MiddlewareMixin):
                 data={'completed': False, 'step': 0}
             )
         if not setup_wizard_data.data['completed']:
-            if request.path != reverse('relays:setup-wizard'):
+            if request.path != reverse('relays:setup-wizard') and 'internal' not in request.path.split('/'):
                 return redirect(reverse('relays:setup-wizard'))
         else:
             if request.path == reverse('relays:setup-wizard'):

@@ -24,7 +24,9 @@
             <input class="input" type="number" placeholder="GPIO pin">
         </div>
         <div class="control">
-            <a class="button is-info">
+            <a class="button is-info"
+               data-href="{% url 'relays:test-channel' %}"
+               onclick="testChannel(this)">
                 <span class="icon">
                     <i class="fa-solid fa-check-circle"></i>
                 </span>
