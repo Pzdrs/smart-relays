@@ -8,7 +8,6 @@ class SmartRelaysConfig(AppConfig):
     name = 'smart_relays'
     default_title = 'Smart Relays'
     default_page = reverse_lazy('relays:relay-list')
-    max_relays = 8
     menu = Menu(
         Label('General'),
         Link('Relays', reverse_lazy('relays:relay-list')),

@@ -51,11 +51,6 @@ class RelayCreateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['channel'].queryset = Channel.objects.unused()
 
-    def clean(self):
-        if Relay.objects.count() >= get_project_config().max_relays:
-            raise forms.ValidationError('There are no relay slots left.')
-        return super().clean()
-
 
 class ShareRelayForm(forms.ModelForm):
     class Meta:

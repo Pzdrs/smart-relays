@@ -10,7 +10,7 @@ from django.views.generic import ListView, DetailView, DeleteView, UpdateView, C
 
 from accounts.forms import UserCreateForm
 from accounts.utils.access.user_relay_access_tests import owner_or_shared, owner_or_full_access, \
-    owner_or_at_least_control, superuser
+    owner_or_at_least_control, superuser, owner_or_full_access_or_superuser, owner_or_shared_or_superuser
 from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm, ChannelForm
 from relays.models import Relay, RelayStateChange, RelayCreateRecord, RelayUpdateRecord, UserRelayShare, \
     RelayShareRecord, Channel
@@ -108,7 +108,7 @@ class RelayDetailView(SmartRelaysView, DetailView):
     template_name = 'relay_detail.html'
 
     def test_func(self, request: HttpRequest):
-        return owner_or_shared(self.request.user, self.get_object())
+        return owner_or_shared_or_superuser(self.request.user, self.get_object())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -128,6 +128,11 @@ class RelayDetailView(SmartRelaysView, DetailView):
         context['audit_log_limit'] = audit_log_limit, default_audit_log_limit
         context['audit_log'] = self.get_object().get_audit_log(audit_log_limit)
 
+        context['permissions'] = {
+            'sharing': owner_or_full_access_or_superuser(self.request.user, self.get_object()),
+            'audit_log': owner_or_full_access_or_superuser(self.request.user, self.get_object()),
+        }
+
         return context
 
     def get_title(self):
@@ -141,7 +146,7 @@ class RelayUpdateView(SmartRelaysView, UpdateView):
     title = 'Relay update'
 
     def test_func(self, request: HttpRequest):
-        return owner_or_full_access(self.request.user, self.get_object())
+        return owner_or_full_access_or_superuser(self.request.user, self.get_object())
 
     def get_page_subtitle(self):
         return self.object
@@ -179,7 +184,7 @@ class RelayDeleteView(SmartRelaysView, DeleteView):
     success_url = reverse_lazy('relays:relay-list')
 
     def test_func(self, request: HttpRequest):
-        return owner_or_full_access(self.request.user, self.get_object())
+        return owner_or_full_access_or_superuser(self.request.user, self.get_object())
 
 
 class RelayChangeStateView(SmartRelaysView, View):
@@ -309,10 +314,14 @@ class RevokeRelayShareView(SmartRelaysView, DeleteView):
     model = UserRelayShare
 
     def get_success_url(self):
-        return reverse('relays:relay-detail', kwargs={'pk': self.get_object().relay.pk}) + '#sharing'
+        print(RelayShareRecord.objects.get(pk=self.get_object().pk))
+        if owner_or_full_access_or_superuser(self.request.user, self.get_object().relay):
+            return reverse('relays:relay-detail', kwargs={'pk': self.get_object().relay.pk})
+        else:
+            return reverse(get_project_config().default_page)
 
     def test_func(self, request: HttpRequest):
-        return owner_or_full_access(self.request.user, self.get_object().relay)
+        return owner_or_full_access_or_superuser(self.request.user, self.get_object().relay)
 
 
 class RelayShareUpdateView(SmartRelaysView, UpdateView):
@@ -321,4 +330,4 @@ class RelayShareUpdateView(SmartRelaysView, UpdateView):
     fields = ('permission_level',)
 
     def test_func(self, request: HttpRequest):
-        return owner_or_full_access(self.request.user, self.get_object().relay)
+        return owner_or_full_access_or_superuser(self.request.user, self.get_object().relay)

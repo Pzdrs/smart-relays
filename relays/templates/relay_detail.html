@@ -24,17 +24,21 @@
     <canvas id="history"></canvas>
     <script src="{% static 'js/relay_detail.js' %}"></script>
 
-    <div id="sharing" class="is-flex is-align-items-center mt-5 mb-2">
-        <p class="is-size-4">Sharing</p>
-        <div class="is-hidden-mobile ml-3">
+    {% if permissions.sharing %}
+        <div id="sharing" class="is-flex is-align-items-center mt-5 mb-2">
+            <p class="is-size-4">Sharing</p>
+            <div class="is-hidden-mobile ml-3">
+                {% include 'includes/share_relay_form.html' with form=share_form %}
+            </div>
+        </div>
+        <div class="is-hidden-tablet mb-2">
             {% include 'includes/share_relay_form.html' with form=share_form %}
         </div>
-    </div>
-    <div class="is-hidden-tablet mb-2">
-        {% include 'includes/share_relay_form.html' with form=share_form %}
-    </div>
-    {% include 'includes/relay_shares_table.html' with shares=relay_shares %}
+        {% include 'includes/relay_shares_table.html' with shares=relay_shares %}
+    {% endif %}
 
-    <p class="is-size-4 mt-5">Audit log</p>
-    {% include 'includes/audit_log_table__without_relays.html' with rows=audit_log limit=audit_log_limit.0 base_limit=audit_log_limit.1 limit_query_parameter='audit_log_limit' limit_button_id='limit-button' %}
+    {% if permissions.audit_log %}
+        <p class="is-size-4 mt-5">Audit log</p>
+        {% include 'includes/audit_log_table__without_relays.html' with rows=audit_log limit=audit_log_limit.0 base_limit=audit_log_limit.1 limit_query_parameter='audit_log_limit' limit_button_id='limit-button' %}
+    {% endif %}
 {% endblock %}

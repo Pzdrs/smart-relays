@@ -1,3 +1,5 @@
+from urllib.parse import urlsplit
+
 from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin
 from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
@@ -20,8 +22,12 @@ class SmartRelaysView(AccessMixin):
     def handle_test_fail(self, request) -> HttpResponse:
         messages.error(request, 'You do not have permission to access that page.')
         try:
-            return HttpResponseRedirect(request.META['HTTP_REFERER'])
+            referrer = request.META['HTTP_REFERER']
+            if urlsplit(referrer).path != request.path:
+                return HttpResponseRedirect(referrer)
         except KeyError:
+            pass
+        finally:
             return HttpResponseRedirect(get_project_config().default_page)
 
     def dispatch(self, request, *args, **kwargs):

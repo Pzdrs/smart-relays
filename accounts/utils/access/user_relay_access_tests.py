@@ -60,3 +60,19 @@ def superuser(user: User) -> bool:
     Requires the user to be a superuser.
     """
     return user.is_superuser
+
+
+def owner_or_full_access_or_superuser(user: User, relay: Relay) -> bool:
+    """
+    Requires the user to be the owner of the relay or the relay needs to be shared with the user (full access) or the
+    user needs to be a superuser.
+    """
+    return owner(user, relay) or full_access(user, relay) or superuser(user)
+
+
+def owner_or_shared_or_superuser(user: User, relay: Relay) -> bool:
+    """
+    Requires the user to be the owner of the relay or the relay needs to be shared with the user (any permission level)
+    or the user needs to be a superuser.
+    """
+    return owner(user, relay) or relay.get_share(user) is not None or superuser(user)
