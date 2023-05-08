@@ -22,5 +22,5 @@ for easy integration with other applications, such as **Node-RED** or **Home Ass
 ### Shit to fix
 - Show more kind of pagination jede do nekonecna, musim tam dat nejakej cap
 ## Time tracking
-### Desktop: 53.5h
+### Desktop: 61.25h
 ### Laptop: 14.25h
