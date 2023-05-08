@@ -34,6 +34,9 @@ class ChannelQuerySet(QuerySet):
     def unused(self) -> 'ChannelQuerySet':
         return self.filter(relay__isnull=True)
 
+    def in_use(self) -> 'ChannelQuerySet':
+        return self.filter(relay__isnull=False)
+
 
 class Channel(Model):
     name = models.CharField(max_length=100, default=default_channel_name)

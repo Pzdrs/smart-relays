@@ -3,7 +3,7 @@ import json
 from django.contrib import messages
 from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import ListView, DetailView, DeleteView, UpdateView, CreateView, TemplateView
@@ -14,8 +14,6 @@ from accounts.utils.access.user_relay_access_tests import owner_or_shared, owner
 from relays.forms import RelayUpdateForm, RelayCreateForm, ShareRelayForm, ChannelForm
 from relays.models import Relay, RelayStateChange, RelayCreateRecord, RelayUpdateRecord, UserRelayShare, \
     RelayShareRecord, Channel
-from relays.utils.relay import relay_slots_breakdown
-from relays.utils.template import get_progress_bar_color
 from smart_relays.models import ApplicationData
 from smart_relays.utils.config import get_relays_config, get_project_config
 from smart_relays.utils.template import push_form_errors_to_messages
@@ -98,14 +96,6 @@ class RelayListView(SmartRelaysView, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        slots_breakdown = relay_slots_breakdown()
-
-        context['slots_max'] = slots_breakdown[0]
-        context['slots_used'] = slots_breakdown[1]
-        context['slots_left'] = slots_breakdown[2]
-
-        context['progress_color'] = get_progress_bar_color(slots_breakdown[1] / slots_breakdown[0])
-
         context['create_form'] = RelayCreateForm(initial={'user': self.request.user})
         return context
 
@@ -215,6 +205,9 @@ class ChannelListView(SmartRelaysView, ListView):
     title = 'Channels'
     model = Channel
 
+    def test_func(self, request: HttpRequest):
+        return superuser(request.user)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -243,6 +236,9 @@ class ChannelCreateView(SmartRelaysView, CreateView):
     form_class = ChannelForm
     success_url = reverse_lazy('relays:channel-list')
 
+    def test_func(self, request: HttpRequest):
+        return superuser(request.user)
+
     def form_invalid(self, form):
         push_form_errors_to_messages(self.request, form)
         return redirect(self.success_url)
@@ -258,6 +254,9 @@ class ChannelDeleteView(SmartRelaysView, DeleteView):
 
 
 class ChannelTestView(SmartRelaysView, View):
+    def test_func(self, request: HttpRequest):
+        return superuser(request.user)
+
     def get(self, request, *args, **kwargs):
         from relays.tasks import test_channel
         channel: Channel = Channel.objects.get(pk=kwargs['pk'])
@@ -278,6 +277,9 @@ class AuditLogView(SmartRelaysView, ListView):
     template_name = 'audit_log.html'
     title = 'Audit Log'
     paginate_by = 10
+
+    def test_func(self, request: HttpRequest):
+        return superuser(request.user)
 
     def get_queryset(self):
         create_records = list(RelayCreateRecord.objects.all())

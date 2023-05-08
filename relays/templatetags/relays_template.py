@@ -4,6 +4,7 @@ from django.utils.safestring import mark_safe
 
 from relays.models import RelayAuditRecord, Relay, UserRelayShare, Channel
 from relays.utils.dates import format_date
+from relays.utils.template import get_progress_bar_color
 
 register = template.Library()
 
@@ -57,4 +58,16 @@ def render_pagination_range(
         'page_range': [int(page) if str(page).isnumeric() else None for page in page_range],
         'current_page': page,
         'ellipsis': range_ellipsis if range_ellipsis else paginator.ELLIPSIS
+    }
+
+
+@register.inclusion_tag('includes/slot_status.html')
+def slot_status():
+    slots_max = Channel.objects.count()
+    slots_used = Channel.objects.in_use().count()
+    return {
+        'slots_used': slots_used,
+        'slots_max': slots_max,
+        'slots_left': slots_max - slots_used,
+        'progress_color': get_progress_bar_color(slots_used / slots_max)
     }

@@ -6,11 +6,7 @@
     <script id="csrf_token" type="application/json">{{ csrf_token }}</script>
 {% endblock %}
 {% block status %}
-    <p class="has-text-grey-light">
-        {{ slots_used }}/{{ slots_max }} slots used (<b>{% if slots_left <= 0 %}Full{% else %}{{ slots_left }}
-        remaining{% endif %}</b>)
-    </p>
-    <progress class="progress {{ progress_color }}" value="{{ slots_used }}" max="{{ slots_max }}"></progress>
+    {% slot_status %}
 {% endblock %}
 {% block body_content %}
     <div class="columns is-multiline">
