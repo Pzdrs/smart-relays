@@ -1,6 +1,7 @@
 import time
 
-from relays.models import Channel
+from accounts.models import User
+from relays.models import Channel, RelayStateChange, Relay
 from relays.utils.gpio import set_channel_state
 from smart_relays.celery import app
 
@@ -21,9 +22,10 @@ def test_pin(pin: int):
 
 
 @app.task
-def toggle_relay(channel_id: int):
-    channel: Channel = Channel.objects.get(pk=channel_id)
-    __toggle_relay(channel.pin)
+def toggle_relay(relay_id: int, user_id: int):
+    relay = Relay.objects.get(pk=relay_id)
+    __toggle_relay(relay.channel.pin)
+    RelayStateChange.objects.toggle(relay, User.objects.get(pk=user_id))
 
 
 def __toggle_relay(pin: int):

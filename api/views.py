@@ -23,8 +23,8 @@ class RelayDetail(APIView):
 class RelayToggle(APIView):
     def post(self, request, pk, format=None):
         relay: Relay = Relay.objects.get(pk=pk)
-        new_state = relay.toggle()
+        relay.toggle(request)
         return Response({
             'status': 'ok',
-            'new_state': new_state
+            'new_state': True
         })

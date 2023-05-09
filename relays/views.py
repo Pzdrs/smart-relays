@@ -210,7 +210,7 @@ class RelayChangeStateView(SmartRelaysView, View):
     def post(self, request, *args, **kwargs):
         try:
             delay = int(request.POST['delay'])
-            messages.success(request, f'Relay {self.relay.name} scheduled to be toggled in {delay} seconds.')
+            messages.success(request, f'Relay {self.relay.name} scheduled to be toggled in {delay/60} minutes.')
         except KeyError:
             delay = 0
             messages.success(request, f'Relay {self.relay.name} toggled.')
