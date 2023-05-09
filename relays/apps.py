@@ -13,12 +13,12 @@ class RelaysConfig(AppConfig):
 
         if not self.__has_unapplied_migrations():
             from smart_relays.models import ApplicationData
-            from relays.utils.gpio import init_GPIO
+            #from relays.utils.gpio import init_GPIO
             ApplicationData.objects.get_or_create(
                 key='setup_wizard',
                 defaults={'data': {'completed': False, 'step': 0}}
             )
-            init_GPIO()
+            #init_GPIO()
 
     def __has_unapplied_migrations(self):
         executor = MigrationExecutor(connections[DEFAULT_DB_ALIAS])

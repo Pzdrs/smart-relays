@@ -12,7 +12,7 @@ for easy integration with other applications, such as **Node-RED** or **Home Ass
 - [x] Per-relay user permissions
 - [x] Per-relay audit logs
 - [x] Three level permissions for shared relays
-- [ ] Scheduled tasks
+- [x] Scheduled tasks
 - [x] Audit log pagination - both global and in relay detail
 ### Shit to fix
 - Show more kind of pagination jede do nekonecna, musim tam dat nejakej cap
