@@ -7,20 +7,59 @@
     <script src="{% static 'js/pagination.js' %}" defer></script>
     {{ state_history|json_script:'state_history' }}
 {% endblock %}
+{% block page_subtitle %}
+    State:
+    {% if object.get_current_state.new_state %}
+        <span class="tag is-success">ON</span>
+    {% else %}
+        <span class="tag is-danger">OFF</span>
+    {% endif %}
+{% endblock %}
 {% block body_content %}
-    <p class="is-size-4">Overview</p>
+    <p class="is-size-4 mb-3">Overview</p>
     <div class="columns">
-        <div class="column">
-            <p class="has-text-weight-bold">Name</p>
+        <div class="column pb-0">
             <p class="has-text-weight-bold">Description</p>
         </div>
         <div class="column">
-            <p>{{ object.name }}</p>
             <p>{{ object.description }}</p>
         </div>
     </div>
+    <p class="is-size-4 mb-3">Scheduling</p>
 
-    <p class="is-size-4">State history</p>
+    <div class="columns">
+        <div class="column">
+            <label class="label">Quick scheduling <span
+                    class="has-text-weight-light">(toggle the relay after)</span></label>
+            <div class="buttons">
+                <a href="" class="button is-info is-light">
+                    5 min
+                </a>
+                <a href="" class="button is-info is-light">
+                    15 min
+                </a>
+                <a href="" class="button is-info is-light">
+                    30 min
+                </a>
+                <a href="" class="button is-link is-light">
+                    1 hour
+                </a>
+                <a href="" class="button is-link is-light">
+                    6 hours
+                </a>
+                <a href="" class="button is-link is-light">
+                    12 hours
+                </a>
+                <a href="" class="button is-primary is-light">
+                    Tomorrow (this time)
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <p class="is-size-4 mb-3">State history</p>
     <canvas id="history"></canvas>
     <script src="{% static 'js/relay_detail.js' %}"></script>
 
