@@ -30,27 +30,13 @@
             <label class="label">Quick scheduling <span
                     class="has-text-weight-light">(toggle the relay after)</span></label>
             <div class="buttons">
-                <a href="" class="button is-info is-light">
-                    5 min
-                </a>
-                <a href="" class="button is-info is-light">
-                    15 min
-                </a>
-                <a href="" class="button is-info is-light">
-                    30 min
-                </a>
-                <a href="" class="button is-link is-light">
-                    1 hour
-                </a>
-                <a href="" class="button is-link is-light">
-                    6 hours
-                </a>
-                <a href="" class="button is-link is-light">
-                    12 hours
-                </a>
-                <a href="" class="button is-primary is-light">
-                    Tomorrow (this time)
-                </a>
+                {% for button in quick_scheduling %}
+                    <form action="{% url 'relays:relay-toggle' object.pk %}" method="post" class="mr-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="delay" value="{{ button.1 }}">
+                        <button class="button is-light {{ button.2 }}">{{ button.0 }}</button>
+                    </form>
+                {% endfor %}
             </div>
         </div>
     </div>

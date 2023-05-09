@@ -133,6 +133,16 @@ class RelayDetailView(SmartRelaysView, DetailView):
             'audit_log': owner_or_full_access_or_superuser(self.request.user, self.get_object()),
         }
 
+        context['quick_scheduling'] = [
+            ('5 min', 5 * 60, 'is-info'),
+            ('15 min', 15 * 60, 'is-info'),
+            ('30 min', 30 * 60, 'is-info'),
+            ('1 hour', 60 * 60, 'is-link'),
+            ('6 hours', 6 * 60 * 60, 'is-link'),
+            ('12 hours', 12 * 60 * 60, 'is-link'),
+            ('Tomorrow (this time)', 24 * 60 * 60, 'is-primary'),
+        ]
+
         return context
 
     def get_title(self):
@@ -198,7 +208,11 @@ class RelayChangeStateView(SmartRelaysView, View):
         return owner_or_at_least_control(request.user, self.relay)
 
     def post(self, request, *args, **kwargs):
-        self.relay.toggle(request)
+        try:
+            delay = int(request.POST['delay'])
+        except KeyError:
+            delay = 0
+        self.relay.toggle(request, delay)
         return HttpResponse()
 
 
