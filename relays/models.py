@@ -140,7 +140,7 @@ class Relay(BaseModel):
 
     def toggle(self, request: HttpRequest, delay: int = 0):
         from relays.tasks import toggle_relay
-        toggle_relay.apply_async((self.channel.pk,), countdown=delay)
+        toggle_relay.apply_async((self.pk, request.user.pk), countdown=delay)
 
     def get_possible_recipients(self) -> QuerySet:
         """
