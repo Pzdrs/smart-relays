@@ -213,7 +213,8 @@ class RelayChangeStateView(SmartRelaysView, View):
         except KeyError:
             delay = 0
         self.relay.toggle(request, delay)
-        return HttpResponse()
+        messages.success(request, f'Relay {self.relay.name} toggled')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
 # ----------------------------------------
