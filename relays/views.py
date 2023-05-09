@@ -210,10 +210,11 @@ class RelayChangeStateView(SmartRelaysView, View):
     def post(self, request, *args, **kwargs):
         try:
             delay = int(request.POST['delay'])
+            messages.success(request, f'Relay {self.relay.name} scheduled to be toggled in {delay} seconds.')
         except KeyError:
             delay = 0
+            messages.success(request, f'Relay {self.relay.name} toggled.')
         self.relay.toggle(request, delay)
-        messages.success(request, f'Relay {self.relay.name} toggled')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
