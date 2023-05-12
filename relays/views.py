@@ -174,12 +174,7 @@ class RelayCreateView(SmartRelaysView, CreateView):
     success_url = reverse_lazy('relays:relay-list')
 
     def form_invalid(self, form):
-        for field, errors in form.errors.items():
-            for error in errors:
-                if field == '__all__':
-                    messages.error(self.request, error)
-                else:
-                    messages.error(self.request, f'<b>{field}</b>: {error}')
+        push_form_errors_to_messages(self.request, form)
         return redirect(self.success_url)
 
     def post(self, request, *args, **kwargs):
