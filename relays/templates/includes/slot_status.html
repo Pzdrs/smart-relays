@@ -1,5 +1,9 @@
-<p class="has-text-grey-light">
-    {{ slots_used }}/{{ slots_max }} slots used (<b>{% if slots_left <= 0 %}Full{% else %}{{ slots_left }}
-    remaining{% endif %}</b>)
-</p>
+{% if slots_max == 0 %}
+    <p class="has-text-grey-light">No slots available</p>
+{% else %}
+    <p class="has-text-grey-light">
+        {{ slots_used }}/{{ slots_max }} slots used (<b>{% if slots_left <= 0 %}Full{% else %}{{ slots_left }}
+        remaining{% endif %}</b>)
+    </p>
+{% endif %}
 <progress class="progress {{ progress_color }}" value="{{ slots_used }}" max="{{ slots_max }}"></progress>
