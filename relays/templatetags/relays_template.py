@@ -69,5 +69,5 @@ def slot_status():
         'slots_used': slots_used,
         'slots_max': slots_max,
         'slots_left': slots_max - slots_used,
-        'progress_color': get_progress_bar_color(slots_used / slots_max)
+        'progress_color': get_progress_bar_color(slots_used / slots_max) if slots_max > 0 else ''
     }
