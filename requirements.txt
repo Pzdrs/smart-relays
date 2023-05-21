@@ -21,6 +21,7 @@ pycparser==2.21
 python-decouple==3.8
 pytz==2023.3
 six==1.16.0
+RPi.GPIO==0.7.1
 sqlparse==0.4.3
 tzdata==2023.3
 vine==5.0.0
