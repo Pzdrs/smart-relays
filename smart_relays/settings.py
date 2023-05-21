@@ -149,7 +149,7 @@ MESSAGE_TAGS = {
 
 # CELERY
 RABBITMQ = {
-    "PROTOCOL": "amqp",  # in prod change with "amqps"
+    "PROTOCOL": "amqp",
     "HOST": os.getenv("RABBITMQ_HOST", "localhost"),
     "PORT": os.getenv("RABBITMQ_PORT", 5672),
     "USER": os.getenv("RABBITMQ_USER", "guest"),

@@ -1,32 +1,31 @@
 version: '3.8'
 services:
-  web:
-    build:
-      context: .
-    command: gunicorn --bind 0.0.0.0:8000 <project-name>.wsgi --workers=4
+  rabbit:
+    image: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  django_gunicorn:
+    build: .
     volumes:
-      - static_volume:/app/static
-      - media_volume:/app/media
-    expose:
-      - "8000"
-    networks:
-      - django-network
+      - static:/app/static
+    environment:
+      - SECRET_KEY=<YOUR SECRET KEY>
+      - RABBITMQ_HOST=rabbit
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rabbit
+
   nginx:
     build: nginx
-    restart: always
     volumes:
-      - static_volume:/app/static
-      - media_volume:/app/media
+      - static:/static
     ports:
       - "80:80"
     depends_on:
-      - web
-    networks:
-      - django-network
-networks:
-  django-network:
-    name: django-network
+      - django_gunicorn
 
 volumes:
-  media_volume:
-  static_volume:
+  static:
