@@ -31,6 +31,8 @@ ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
 CSRF_TRUSTED_ORIGINS = ['http://localhost']
 
+ECURE_CROSS_ORIGIN_OPENER_POLICY = None
+
 AUTH_USER_MODEL = 'accounts.User'
 
 # Application definition
