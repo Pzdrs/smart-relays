@@ -1,4 +1,4 @@
-FROM python:3.11-alpine
+FROM arm32v7/python:3
 
 EXPOSE 8000
 

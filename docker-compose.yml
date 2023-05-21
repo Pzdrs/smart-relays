@@ -8,6 +8,7 @@ services:
 
   django_gunicorn:
     build: .
+    privileged: true
     volumes:
       - static:/app/static
     environment:

@@ -2,7 +2,6 @@ amqp==5.1.1
 asgiref==3.6.0
 billiard==3.6.4.0
 celery==5.2.7
-cffi==1.15.1
 click==8.1.3
 click-didyoumean==0.3.0
 click-plugins==1.1.1
@@ -12,8 +11,6 @@ Django==4.1.5
 django-extensions==3.2.1
 djangorestframework==3.14.0
 fontawesomefree==6.4.0
-gevent==22.10.2
-greenlet==2.0.2
 gunicorn==20.1.0
 kombu==5.2.4
 prompt-toolkit==3.0.38
@@ -26,5 +23,3 @@ sqlparse==0.4.3
 tzdata==2023.3
 vine==5.0.0
 wcwidth==0.2.6
-zope.event==4.6
-zope.interface==6.0
