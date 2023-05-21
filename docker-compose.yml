@@ -23,7 +23,7 @@ services:
     image: nginx:latest
     volumes:
       - static:/static
-      - nginx:/etc/nginx/conf.d
+      - ./nginx:/etc/nginx/conf.d
     ports:
       - "80:80"
     depends_on:
@@ -31,4 +31,3 @@ services:
 
 volumes:
   static:
-  nginx:
