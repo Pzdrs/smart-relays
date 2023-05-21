@@ -7,7 +7,7 @@ services:
       - "15672:15672"
 
   django_gunicorn:
-    build: .
+    image: pycrs/smart-relays:latest
     privileged: true
     volumes:
       - static:/app/static
@@ -20,9 +20,10 @@ services:
       - rabbit
 
   nginx:
-    build: nginx
+    image: nginx:latest
     volumes:
       - static:/static
+      - nginx:/etc/nginx/conf.d
     ports:
       - "80:80"
     depends_on:
