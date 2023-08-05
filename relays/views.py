@@ -325,7 +325,6 @@ class RevokeRelayShareView(SmartRelaysView, DeleteView):
     model = UserRelayShare
 
     def get_success_url(self):
-        print(RelayShareRecord.objects.get(pk=self.get_object().pk))
         if owner_or_full_access_or_superuser(self.request.user, self.get_object().relay):
             return reverse('relays:relay-detail', kwargs={'pk': self.get_object().relay.pk})
         else:

@@ -197,8 +197,8 @@ class RelayAuditRecord(Model):
 
 
 class RelayStateChangeQuerySet(QuerySet):
-    def create(self, relay: Relay, user: User, new_state: bool) -> 'RelayStateChange':
-        return super().create(relay=relay, user=user, new_state=new_state)
+    def create(self, relay: Relay, user: User, new_state: bool, **kwargs) -> 'RelayStateChange':
+        return super().create(relay=relay, user=user, new_state=new_state, **kwargs)
 
     def toggle(self, relay: Relay, user: User) -> 'RelayStateChange':
         current_state = relay.get_current_state()

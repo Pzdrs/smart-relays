@@ -43,9 +43,11 @@
 
 
 
-    <p class="is-size-4 mb-3">State history</p>
-    <canvas id="history"></canvas>
-    <script src="{% static 'js/relay_detail.js' %}"></script>
+    <div>
+        <p class="is-size-4 mb-3">State history</p>
+        <canvas id="history"></canvas>
+        <script src="{% static 'js/relay_detail.js' %}"></script>
+    </div>
 
     {% if permissions.sharing %}
         <div id="sharing" class="is-flex is-align-items-center mt-5 mb-2">
