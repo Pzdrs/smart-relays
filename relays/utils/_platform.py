@@ -10,17 +10,18 @@ WINDOWS = 'windows'
 
 SUPPORTED_PLATFORMS = (RASPBERRY_PI,)
 IS_LINUX = (PLATFORM == 'linux')
-ON_SUPPORTED_PLATFORM = (PLATFORM in SUPPORTED_PLATFORMS)
 
 if IS_LINUX:
-    PLATFORM = platform.linux_distribution()[0].lower()
-    if PLATFORM == DEBIAN:
-        try:
-            with open('/proc/cpuinfo') as f:
-                for line in f:
-                    line = line.strip()
-                    if line.startswith('Hardware') and line.endswith('BCM2708'):
-                        PLATFORM = RASPBERRY_PI
-                        break
-        except:
-            pass
+    try:
+        with open('/proc/cpuinfo') as f:
+            for line in f:
+                line = line.strip()
+                print(line)
+                if line.startswith('Model') and 'raspberry' in line.lower():
+                    print('hit')
+                    PLATFORM = RASPBERRY_PI
+                    break
+    except:
+        pass
+
+ON_SUPPORTED_PLATFORM = (PLATFORM in SUPPORTED_PLATFORMS)
